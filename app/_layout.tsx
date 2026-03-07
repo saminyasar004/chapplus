@@ -22,7 +22,7 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SafeAreaView className="flex-1">
+      <SafeAreaView className="flex-1 bg-white">
         <StatusBar backgroundColor="#fff" barStyle="dark-content" />
         <Stack
           screenOptions={{

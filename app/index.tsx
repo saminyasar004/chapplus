@@ -15,9 +15,9 @@ export default function App() {
 
   return (
     <Layout>
-      <View className="row table h-screen items-center justify-center">
+      <View className="row table h-screen items-center justify-center bg-white">
         <Image
-          source={require('assets/images/adaptive-icon.png')}
+          source={require('assets/images/icon.png')}
           className="h-[200px] w-[200px]"
         />
       </View>

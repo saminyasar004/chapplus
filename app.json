@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "RNBoilerplate",
-    "slug": "rnboilerplate",
+    "name": "ChapPlus",
+    "slug": "chapplus",
     "version": "1.0.0",
-    "scheme": "rnboilerplate",
+    "scheme": "chapplus",
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
@@ -15,26 +15,28 @@
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/splash-icon.png",
+      "image": "./assets/images/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#fbfefe"
+      "backgroundColor": "#FFFFFF"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#fbfefe"
+        "foregroundImage": "./assets/images/icon.jpg",
+        "backgroundColor": "#FFFFFF"
       },
-      "package": "com.saminyasar004.rnboilerplate",
-      "bundleIdentifier": "com.saminyasar004.rnboilerplate"
+      "package": "com.saminyasar004.chapplus",
+      "bundleIdentifier": "com.saminyasar004.chapplus"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#fbfefe"
+        "foregroundImage": "./assets/images/icon.jpg",
+        "backgroundColor": "#FFFFFF",
+        "width": 1024,
+        "height": 1024
       },
-      "package": "com.saminyasar004.rnboilerplate",
+      "package": "com.saminyasar004.chapplus",
       "edgeToEdgeEnabled": true
     },
     "extra": {
