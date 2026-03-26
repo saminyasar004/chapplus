@@ -118,6 +118,106 @@ export default function OrderManagement() {
     },
   ];
 
+  const deliveredOrders = [
+    {
+      id: 1,
+      title: 'Gradient Graphic T-shirt',
+      size: 'Medium',
+      color: 'White',
+      orderId: '146446',
+      price: 145,
+      image:
+        'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
+    },
+    {
+      id: 2,
+      title: 'Checkered Shirt',
+      size: 'Medium',
+      color: 'White',
+      orderId: '146446',
+      price: 180,
+      image: 'https://img.freepik.com/free-photo/checkered-shirt-isolated_1253-334.jpg',
+    },
+    {
+      id: 3,
+      title: 'Gradient Graphic T-shirt',
+      size: 'Medium',
+      color: 'White',
+      orderId: '146446',
+      price: 145,
+      image:
+        'https://images.unsplash.com/photo-1532332248682-206cc786359f?q=80&w=400&auto=format&fit=crop',
+    },
+    {
+      id: 4,
+      title: 'Gradient Graphic T-shirt',
+      size: 'Medium',
+      color: 'White',
+      orderId: '146446',
+      price: 145,
+      image:
+        'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
+    },
+  ];
+
+  const cancelledOrders = [
+    {
+      id: 1,
+      title: 'Gradient Graphic T-shirt',
+      color: 'White',
+      orderId: '12123',
+      price: 145,
+      status: 'Cancelled',
+      statusColor: '#EF4444',
+      image:
+        'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
+    },
+    {
+      id: 2,
+      title: 'Checkered Shirt',
+      size: 'Medium',
+      color: 'Red',
+      orderId: '12123',
+      price: 180,
+      status: 'Refund Processiong',
+      statusColor: '#22C55E',
+      image: 'https://img.freepik.com/free-photo/checkered-shirt-isolated_1253-334.jpg',
+    },
+    {
+      id: 3,
+      title: 'Gradient Graphic T-shirt',
+      color: 'White',
+      orderId: '12123',
+      price: 240,
+      status: 'Cancelled',
+      statusColor: '#EF4444',
+      image:
+        'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
+    },
+    {
+      id: 4,
+      title: 'Checkered Shirt',
+      size: 'Medium',
+      color: 'Red',
+      orderId: '12123',
+      price: 180,
+      status: 'Refund Processiong',
+      statusColor: '#22C55E',
+      image: 'https://img.freepik.com/free-photo/checkered-shirt-isolated_1253-334.jpg',
+    },
+    {
+      id: 5,
+      title: 'Gradient Graphic T-shirt',
+      color: 'White',
+      orderId: '12123',
+      price: 145,
+      status: 'Cancelled',
+      statusColor: '#EF4444',
+      image:
+        'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
+    },
+  ];
+
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
       <View className="flex-1">
@@ -184,47 +284,129 @@ export default function OrderManagement() {
           className="flex-1 pt-5"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 120 }}>
-          {subTab === 'Ready to handoff' ? (
+          {activeTab === 'Active' ? (
+            subTab === 'Ready to handoff' ? (
+              <View>
+                <Text className="mb-5 px-6 text-sm font-medium text-[#94A3B8]">
+                  Upcoming Handoff
+                </Text>
+                {activeOrders.map((item) => (
+                  <TouchableOpacity
+                    key={item.id}
+                    activeOpacity={0.9}
+                    onPress={() => router.push('/product-details')}
+                    className="mx-6 mb-6 flex-row items-start border-b border-[#F1F5F9] pb-6">
+                    <Image
+                      source={{
+                        uri: 'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
+                      }}
+                      className="h-28 w-28 rounded-2xl"
+                    />
+                    <View className="ml-5 flex-1">
+                      <View className="flex-row items-center justify-between">
+                        <Text className="text-base font-bold text-[#334155]" style={{ flex: 1 }}>
+                          {item.title}
+                        </Text>
+                        <TouchableOpacity onPress={() => setShowMenu(item.id)} className="p-1">
+                          <MoreVertical size={20} color="#CBD5E1" />
+                        </TouchableOpacity>
+                      </View>
+                      <Text className="mt-0.5 text-sm text-[#94A3B8]">
+                        Size: {item.size}, Color: {item.color}
+                      </Text>
+                      <Text className="text-sm text-[#94A3B8]">OTP: {item.otp}</Text>
+                      <View className="mt-1.5 flex-row items-center">
+                        <MapPin size={16} color="#22C55E" />
+                        <Text className="ml-1.5 text-sm font-bold text-[#22C55E]">
+                          {item.distance}{' '}
+                          <Text className="font-normal text-[#94A3B8]">({item.time})</Text>
+                        </Text>
+                      </View>
+                      <View className="mt-3 flex-row items-center justify-between">
+                        <Text className="text-xl font-bold text-[#334155]">${item.price}</Text>
+                        <TouchableOpacity
+                          onPress={() => setShowHandoffModal(true)}
+                          className="rounded-full bg-[#FF8C00] px-6 py-2">
+                          <Text className="text-sm font-bold text-white">Handoff</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            ) : (
+              <View>
+                <Text className="mb-5 px-6 text-sm font-medium text-[#94A3B8]">
+                  Active return requests
+                </Text>
+                {returnRequests.map((item) => (
+                  <TouchableOpacity
+                    key={item.id}
+                    activeOpacity={0.9}
+                    onPress={() => router.push('/product-details')}
+                    className="mx-6 mb-6 flex-row items-center space-x-5 border-b border-[#F1F5F9] pb-6">
+                    <View className="h-32 w-32 rounded-3xl bg-[#F8FAFC] p-3">
+                      <Image
+                        source={{ uri: item.image }}
+                        className="h-full w-full rounded-2xl"
+                        resizeMode="contain"
+                      />
+                    </View>
+                    <View className="flex-1">
+                      <Text className="text-base font-bold text-[#334155]">{item.title}</Text>
+                      {item.size && (
+                        <Text className="mt-0.5 text-sm text-[#94A3B8]">Size: {item.size}</Text>
+                      )}
+                      <Text className="text-sm text-[#94A3B8]">Color: {item.color}</Text>
+                      {item.orderId && (
+                        <Text className="text-sm text-[#94A3B8]">Order#{item.orderId}</Text>
+                      )}
+                      <View className="mt-3 flex-row items-center justify-between">
+                        <Text className="text-sm font-bold text-[#334155]">${item.price}</Text>
+                        <TouchableOpacity
+                          activeOpacity={0.8}
+                          onPress={() => setShowReturningModal(true)}
+                          className="rounded-full bg-[#FF8C00] px-5 py-2">
+                          <Text className="text-sm font-bold text-white">Review request</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )
+          ) : activeTab === 'Delivered' ? (
             <View>
-              <Text className="mb-5 px-6 text-sm font-medium text-[#94A3B8]">Upcoming Handoff</Text>
-              {activeOrders.map((item) => (
+              <Text className="mb-5 px-6 text-sm font-medium text-[#475569]">Customers List</Text>
+              {deliveredOrders.map((item) => (
                 <TouchableOpacity
                   key={item.id}
                   activeOpacity={0.9}
-                  onPress={() => router.push('/product-details')}
-                  className="mx-6 mb-6 flex-row items-start border-b border-[#F1F5F9] pb-6">
-                  <Image
-                    source={{
-                      uri: 'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
-                    }}
-                    className="h-28 w-28 rounded-2xl"
-                  />
+                  onPress={() =>
+                    router.push({
+                      pathname: '/product-details',
+                      params: { type: 'delivered' },
+                    })
+                  }
+                  className="mx-6 mb-6 flex-row items-center border-b border-[#F1F5F9] pb-6">
+                  <Image source={{ uri: item.image }} className="h-28 w-28 rounded-2xl" />
                   <View className="ml-5 flex-1">
-                    <View className="flex-row items-center justify-between">
-                      <Text className="text-base font-bold text-[#334155]" style={{ flex: 1 }}>
-                        {item.title}
-                      </Text>
-                      <TouchableOpacity onPress={() => setShowMenu(item.id)} className="p-1">
-                        <MoreVertical size={20} color="#CBD5E1" />
-                      </TouchableOpacity>
-                    </View>
+                    <Text className="text-base font-bold text-[#334155]">{item.title}</Text>
                     <Text className="mt-0.5 text-sm text-[#94A3B8]">
                       Size: {item.size}, Color: {item.color}
                     </Text>
-                    <Text className="text-sm text-[#94A3B8]">OTP: {item.otp}</Text>
-                    <View className="mt-1.5 flex-row items-center">
-                      <MapPin size={16} color="#22C55E" />
-                      <Text className="ml-1.5 text-sm font-bold text-[#22C55E]">
-                        {item.distance}{' '}
-                        <Text className="font-normal text-[#94A3B8]">({item.time})</Text>
-                      </Text>
-                    </View>
+                    <Text className="text-sm text-[#94A3B8]">Order#{item.orderId}</Text>
                     <View className="mt-3 flex-row items-center justify-between">
                       <Text className="text-xl font-bold text-[#334155]">${item.price}</Text>
                       <TouchableOpacity
-                        onPress={() => setShowHandoffModal(true)}
-                        className="rounded-full bg-[#FF8C00] px-6 py-2">
-                        <Text className="text-sm font-bold text-white">Handoff</Text>
+                        className="rounded-full bg-[#FF8C00] px-5 py-2"
+                        onPress={() =>
+                          router.push({
+                            pathname: '/product-details',
+                            params: { type: 'delivered' },
+                          })
+                        }>
+                        <Text className="text-sm font-bold text-white">View Order</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -233,39 +415,25 @@ export default function OrderManagement() {
             </View>
           ) : (
             <View>
-              <Text className="mb-5 px-6 text-sm font-medium text-[#94A3B8]">
-                Active return requests
-              </Text>
-              {returnRequests.map((item) => (
+              {cancelledOrders.map((item) => (
                 <TouchableOpacity
                   key={item.id}
                   activeOpacity={0.9}
                   onPress={() => router.push('/product-details')}
-                  className="mx-6 mb-6 flex-row items-center space-x-5 border-b border-[#F1F5F9] pb-6">
-                  <View className="h-32 w-32 rounded-3xl bg-[#F8FAFC] p-3">
-                    <Image
-                      source={{ uri: item.image }}
-                      className="h-full w-full rounded-2xl"
-                      resizeMode="contain"
-                    />
-                  </View>
-                  <View className="flex-1">
+                  className="mx-6 mb-6 flex-row items-center border-b border-[#F1F5F9] pb-6">
+                  <Image source={{ uri: item.image }} className="h-28 w-28 rounded-2xl" />
+                  <View className="ml-5 flex-1">
                     <Text className="text-base font-bold text-[#334155]">{item.title}</Text>
                     {item.size && (
                       <Text className="mt-0.5 text-sm text-[#94A3B8]">Size: {item.size}</Text>
                     )}
                     <Text className="text-sm text-[#94A3B8]">Color: {item.color}</Text>
-                    {item.orderId && (
-                      <Text className="text-sm text-[#94A3B8]">Order#{item.orderId}</Text>
-                    )}
+                    <Text className="text-sm text-[#94A3B8]">Order#{item.orderId}</Text>
                     <View className="mt-3 flex-row items-center justify-between">
-                      <Text className="text-sm font-bold text-[#334155]">${item.price}</Text>
-                      <TouchableOpacity
-                        activeOpacity={0.8}
-                        onPress={() => setShowReturningModal(true)}
-                        className="rounded-full bg-[#FF8C00] px-5 py-2">
-                        <Text className="text-sm font-bold text-white">Review request</Text>
-                      </TouchableOpacity>
+                      <Text className="text-xl font-bold text-[#334155]">${item.price}</Text>
+                      <Text className="text-sm font-bold" style={{ color: item.statusColor }}>
+                        {item.status}
+                      </Text>
                     </View>
                   </View>
                 </TouchableOpacity>

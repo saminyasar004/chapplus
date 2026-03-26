@@ -1,11 +1,12 @@
 import Layout from 'components/layout';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Star, ChevronLeft } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 export default function ProductDetails() {
   const router = useRouter();
+  const { type } = useLocalSearchParams();
   const [selectedColor, setSelectedColor] = useState(1); // Gray selected by default
   const [selectedSize, setSelectedSize] = useState('M');
 
@@ -111,7 +112,9 @@ export default function ProductDetails() {
 
           {/* Description */}
           <View className="mt-4">
-            <Text className="mb-4 text-lg font-semibold text-[#475569]">Product description</Text>
+            <Text className="mb-4 text-lg font-semibold text-[#475569]">
+              {type === 'delivered' ? 'Product Note' : 'Product description'}
+            </Text>
             <Text className="text-sm leading-6 text-[#94A3B8]">
               Our compact and foldable Bluetooth earbuds are renowned for their lightweight build,
               offering a convenient and portable solution for audiophiles on the go
