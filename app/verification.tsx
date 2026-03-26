@@ -1,13 +1,23 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Layout from 'components/layout';
 import { useRouter } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function Verification() {
   const router = useRouter();
   const [code, setCode] = useState(['', '', '', '']);
   const inputs = useRef<any[]>([]);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getRole = async () => {
+      const role = await AsyncStorage.getItem('userRole');
+      setUserRole(role);
+    };
+    getRole();
+  }, []);
 
   const handleCodeChange = (text: string, index: number) => {
     const newCode = [...code];
@@ -75,7 +85,13 @@ export default function Verification() {
           </View>
 
           <TouchableOpacity
-            onPress={() => router.replace('/home')}
+            onPress={() => {
+              if (userRole === 'ecommerce') {
+                router.replace('/shop-info-1');
+              } else {
+                router.replace('/(tabs)');
+              }
+            }}
             className="h-14 w-full items-center justify-center rounded-xl bg-[#FF8C00] shadow-lg shadow-orange-500/30">
             <Text className="text-lg font-bold text-white">Confirm</Text>
           </TouchableOpacity>
