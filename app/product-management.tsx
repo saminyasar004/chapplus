@@ -134,7 +134,7 @@ export default function ProductManagement() {
           )}
 
           {activeTab === 'list' && (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/add-product-1')}>
               <Text className="text-base font-bold text-[#FF8C00]">Add product</Text>
             </TouchableOpacity>
           )}
