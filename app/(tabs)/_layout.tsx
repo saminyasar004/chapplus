@@ -75,10 +75,10 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="my-plan"
+        name="order"
         options={{
           headerShown: false,
-          title: isEcommerce ? 'Order' : 'My Plan',
+          title: 'Order',
           tabBarIcon: ({ color, focused }) => (
             <View className="w-full items-center">
               {focused && (
@@ -132,6 +132,12 @@ export default function Layout() {
               )}
             </View>
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="my-plan"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
