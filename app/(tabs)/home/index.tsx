@@ -46,7 +46,7 @@ export default function Index() {
             </TouchableOpacity>
           </View>
 
-          <View className="mb-8">
+          <View className="mb-8 mt-4">
             <SectionHeader title="New Orders" />
             <View className="px-6">
               <HomeOrderItem
