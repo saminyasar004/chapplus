@@ -37,9 +37,11 @@ export default function Index() {
         <Layout>
           <HomeProfileCard />
 
-          <View className="mb-8 px-6">
-            <TouchableOpacity className="flex-row items-center justify-between rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-xl">
-              <Text className="text-lg font-bold text-[#475569]">Product management</Text>
+          <View className="mb-0 px-6">
+            <TouchableOpacity
+              onPress={() => router.push('/product-management')}
+              className="flex-row items-center justify-between rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-sm">
+              <Text className="text-xl font-bold text-[#475569]">Product management</Text>
               <ChevronRight size={20} color="#94A3B8" />
             </TouchableOpacity>
           </View>
