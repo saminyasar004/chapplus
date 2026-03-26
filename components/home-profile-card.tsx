@@ -1,14 +1,18 @@
+import { useRouter } from 'expo-router';
 import { Star } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import Switch from './ui/switch';
 
 export default function HomeProfileCard() {
+  const router = useRouter();
   const [isEnabled, setIsEnabled] = useState(true);
   const toggleSwitch = (value: boolean) => setIsEnabled(value);
 
   return (
-    <View className="mx-6 mb-6 mt-5 rounded-2xl border border-[#F1F5F9] bg-white p-4 shadow-sm">
+    <TouchableOpacity
+      onPress={() => router.push('/shop-details')}
+      className="mx-6 mb-6 mt-5 rounded-2xl border border-[#F1F5F9] bg-white p-4 shadow-sm">
       <View className="flex-row">
         <Image
           source={{
@@ -32,6 +36,6 @@ export default function HomeProfileCard() {
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
