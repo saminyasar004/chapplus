@@ -1,5 +1,6 @@
 import Layout from 'components/layout';
 import { useRouter } from 'expo-router';
+import { ArrowLeft } from 'lucide-react-native';
 import { useState, useRef } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -28,30 +29,32 @@ export default function Verification() {
     <Layout>
       <View className="flex-1 bg-white px-6 pt-12">
         <TouchableOpacity onPress={() => router.back()} className="mb-8">
-          <Text className="text-[#6B7280] text-lg">←</Text>
+          <ArrowLeft size={24} color="#111827" />
         </TouchableOpacity>
 
-        <View className="items-center mb-10">
-          <Text className="text-3xl font-bold text-[#808000] mb-8">Activation Code</Text>
-          <Text className="text-xl font-bold text-[#374151] text-center mb-2">
+        <View className="mb-10 items-center">
+          <Text className="mb-8 text-3xl font-bold text-[#808000]">Activation Code</Text>
+          <Text className="mb-2 text-center text-xl font-bold text-[#374151]">
             We have sent you an activation code.
           </Text>
-          <Text className="text-sm text-[#6B7280] text-center">
+          <Text className="text-center text-sm text-[#6B7280]">
             A code has been sent to your number containing a code to reset your password.
           </Text>
         </View>
 
         <View className="items-center gap-6">
           <Text className="text-base font-semibold text-[#667085]">Enter verification code</Text>
-          
-          <View className="flex-row gap-4 mb-8">
+
+          <View className="mb-8 flex-row gap-4">
             {code.map((digit, index) => (
-              <View key={index} className="w-16 h-16 bg-[#F9FAFB] rounded-full items-center justify-center border border-[#E5E7EB] shadow-sm">
+              <View
+                key={index}
+                className="h-16 w-16 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F9FAFB] shadow-sm">
                 <TextInput
                   ref={(ref) => {
                     inputs.current[index] = ref;
                   }}
-                  className="text-2xl font-bold text-[#111827] text-center w-full"
+                  className="w-full text-center text-2xl font-bold text-[#111827]"
                   maxLength={1}
                   keyboardType="number-pad"
                   value={digit}
@@ -64,16 +67,16 @@ export default function Verification() {
             ))}
           </View>
 
-          <View className="flex-row items-center mb-6">
-            <Text className="text-[#6B7280] text-sm">if you didn't receive a code! </Text>
+          <View className="mb-6 flex-row items-center">
+            <Text className="text-sm text-[#6B7280]">if you didn't receive a code! </Text>
             <TouchableOpacity>
-              <Text className="text-[#F86241] font-bold text-sm">Click Here..</Text>
+              <Text className="text-sm font-bold text-[#FF8C00]">Click Here..</Text>
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity
             onPress={() => router.replace('/home')}
-            className="w-full h-14 items-center justify-center rounded-xl bg-orange-500 shadow-lg shadow-orange-500/30">
+            className="h-14 w-full items-center justify-center rounded-xl bg-[#FF8C00] shadow-lg shadow-orange-500/30">
             <Text className="text-lg font-bold text-white">Confirm</Text>
           </TouchableOpacity>
         </View>
