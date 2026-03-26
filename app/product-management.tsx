@@ -30,8 +30,20 @@ const ProductItem = ({
   </View>
 );
 
-const OrderItem = ({ name, count, image }: { name: string; count: number; image: string }) => (
-  <View className="mb-4 w-[48%] overflow-hidden rounded-3xl border border-[#F1F5F9] bg-white shadow-sm">
+const OrderItem = ({
+  name,
+  count,
+  image,
+  onPress,
+}: {
+  name: string;
+  count: number;
+  image: string;
+  onPress: () => void;
+}) => (
+  <TouchableOpacity
+    onPress={onPress}
+    className="mb-4 w-[48%] overflow-hidden rounded-3xl border border-[#F1F5F9] bg-white shadow-sm">
     <View className="h-36 w-full items-center justify-center bg-[#F8FAFC] p-4">
       <Image source={{ uri: image }} className="h-28 w-28" resizeMode="contain" />
     </View>
@@ -40,7 +52,7 @@ const OrderItem = ({ name, count, image }: { name: string; count: number; image:
         {name} ({count})
       </Text>
     </View>
-  </View>
+  </TouchableOpacity>
 );
 
 export default function ProductManagement() {
@@ -159,21 +171,25 @@ export default function ProductManagement() {
                   name="Sneaker"
                   count={100}
                   image="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=200&auto=format&fit=crop"
+                  onPress={() => router.push('/product-details')}
                 />
                 <OrderItem
                   name="Fitbit Smartwatch"
                   count={100}
                   image="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?q=80&w=200&auto=format&fit=crop"
+                  onPress={() => router.push('/product-details')}
                 />
                 <OrderItem
                   name="Smartphone"
                   count={40}
                   image="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=200&auto=format&fit=crop"
+                  onPress={() => router.push('/product-details')}
                 />
                 <OrderItem
                   name="Headphone"
                   count={20}
                   image="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=200&auto=format&fit=crop"
+                  onPress={() => router.push('/product-details')}
                 />
               </View>
             </View>
