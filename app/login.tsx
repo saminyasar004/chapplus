@@ -1,10 +1,10 @@
-import LogoFull from 'assets/images/logo-full.svg';
+import LogoFull from 'assets/images/logo-full.png';
 import LoginBanner from 'assets/images/login-page-banner.svg';
 import Layout from 'components/layout';
 import { useRouter, Link } from 'expo-router';
 import { Eye, Lock } from 'lucide-react-native';
 import { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function Login() {
   const router = useRouter();
@@ -14,9 +14,9 @@ export default function Login() {
     <Layout>
       <View className="flex-1 bg-white">
         {/* Header Illustration & Logo */}
-        <View className="px-6 pt-4">
+        <View className="px-6 pt-12">
           <View className="py-2">
-            <LogoFull width={160} height={43} />
+            <Image source={LogoFull} style={{ width: 120, height: 40 }} resizeMode="contain" />
           </View>
 
           <View className="items-center justify-center py-6">

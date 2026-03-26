@@ -1,7 +1,7 @@
 import Layout from 'components/layout';
-import LogoFull from 'assets/images/logo-full.svg';
+import LogoFull from 'assets/images/logo-full.png';
 import { useRouter } from 'expo-router';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import OnboardingBanner from 'assets/images/onboarding-page-banner.svg';
 
 export default function Onboarding() {
@@ -11,8 +11,8 @@ export default function Onboarding() {
     <Layout>
       <View className="flex-1 bg-white px-6">
         {/* Header Logo */}
-        <View className="py-2">
-          <LogoFull width={160} height={43} />
+        <View className="py-2 pt-12">
+          <Image source={LogoFull} style={{ width: 120, height: 40 }} resizeMode="contain" />
         </View>
 
         {/* Illustration */}
@@ -23,10 +23,10 @@ export default function Onboarding() {
         {/* Text Content */}
         <View className="items-center py-10">
           <Text className="text-center text-3xl font-bold text-[#6D7437]">
-            Get Product{"\n"}What You Want
+            Get Product{'\n'}What You Want
           </Text>
-          <Text className="mt-4 text-center text-base text-[#9A9DAE] px-4">
-            Trendy outfits, stunning accessories,{"\n"}and beauty essentials
+          <Text className="mt-4 px-4 text-center text-base text-[#9A9DAE]">
+            Trendy outfits, stunning accessories,{'\n'}and beauty essentials
           </Text>
         </View>
 
