@@ -90,6 +90,8 @@ export default function Verification() {
                 router.replace('/ecommerce/shop-info-1');
               } else if (userRole === 'restaurant') {
                 router.replace('/restaurant/create-profile');
+              } else if (userRole === 'hotel') {
+                router.replace('/hotel/create-profile');
               } else {
                 router.replace('/(tabs)');
               }

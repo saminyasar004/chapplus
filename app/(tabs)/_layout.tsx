@@ -10,6 +10,8 @@ import {
   Settings2,
   UtensilsCrossed,
   LayoutGrid,
+  Calendar,
+  Bed,
 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
@@ -27,6 +29,7 @@ export default function Layout() {
 
   const isEcommerce = role === 'ecommerce';
   const isRestaurant = role === 'restaurant';
+  const isHotel = role === 'hotel';
 
   return (
     <Tabs
@@ -80,7 +83,7 @@ export default function Layout() {
         name="order"
         options={{
           headerShown: false,
-          title: isRestaurant ? 'Orders' : 'Order',
+          title: isRestaurant ? 'Orders' : isHotel ? 'Booking' : 'Order',
           tabBarIcon: ({ color, focused }) => (
             <View className="w-full items-center">
               {focused && (
@@ -88,6 +91,8 @@ export default function Layout() {
               )}
               {isRestaurant ? (
                 <ClipboardList size={24} color={color} />
+              ) : isHotel ? (
+                <Calendar size={24} color={color} />
               ) : isEcommerce ? (
                 <Package size={24} color={color} />
               ) : (
@@ -101,14 +106,18 @@ export default function Layout() {
         name="menu"
         options={{
           headerShown: false,
-          title: 'Menu',
-          href: isRestaurant ? undefined : null,
+          title: isHotel ? 'Room' : 'Menu',
+          href: isRestaurant || isHotel ? undefined : null,
           tabBarIcon: ({ color, focused }) => (
             <View className="w-full items-center">
               {focused && (
                 <View className="absolute -top-[18px] h-3 w-10 rounded-b-xl bg-[#FF8C00]" />
               )}
-              <UtensilsCrossed size={24} color={color} />
+              {isHotel ? (
+                <Bed size={24} color={color} />
+              ) : (
+                <UtensilsCrossed size={24} color={color} />
+              )}
             </View>
           ),
         }}
@@ -123,7 +132,7 @@ export default function Layout() {
               {focused && (
                 <View className="absolute -top-[18px] h-3 w-10 rounded-b-xl bg-[#FF8C00]" />
               )}
-              {isEcommerce || isRestaurant ? (
+              {isEcommerce || isRestaurant || isHotel ? (
                 <View
                   className={`h-6 w-6 items-center justify-center rounded-md ${focused ? 'bg-[#FF8C00]' : 'bg-[#94A3B8]'}`}>
                   <DollarSign size={16} color="white" strokeWidth={3} />
