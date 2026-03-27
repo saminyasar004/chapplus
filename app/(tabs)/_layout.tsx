@@ -1,17 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NoRippleTabButton from 'components/no-rippler-pressable';
 import { Tabs } from 'expo-router';
-import {
-  Briefcase,
-  House,
-  Settings2,
-  UserRound,
-  Package,
-  DollarSign,
-  Settings,
-} from 'lucide-react-native';
+import { Briefcase, House, Settings2, Package, DollarSign } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 export default function Layout() {
   const [role, setRole] = useState<string | null>(null);
@@ -94,10 +86,10 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="revenue"
         options={{
           headerShown: false,
-          title: isEcommerce ? 'Revenue' : 'Settings',
+          title: 'Revenue',
           tabBarIcon: ({ color, focused }) => (
             <View className="w-full items-center">
               {focused && (
@@ -118,24 +110,17 @@ export default function Layout() {
       <Tabs.Screen
         name="profile"
         options={{
-          headerShown: false,
-          title: isEcommerce ? 'Settings' : 'Profile',
-          tabBarIcon: ({ color, focused }) => (
-            <View className="w-full items-center">
-              {focused && (
-                <View className="absolute -top-[18px] h-3 w-10 rounded-b-xl bg-[#FF8C00]" />
-              )}
-              {isEcommerce ? (
-                <Settings size={24} color={color} />
-              ) : (
-                <UserRound size={24} color={color} />
-              )}
-            </View>
-          ),
+          href: null,
         }}
       />
       <Tabs.Screen
         name="my-plan"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
         options={{
           href: null,
         }}
