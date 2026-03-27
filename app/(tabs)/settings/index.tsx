@@ -1,8 +1,9 @@
 import { useRouter } from 'expo-router';
-import { ChevronRight, ChevronLeft, ArrowLeft } from 'lucide-react-native';
-import React from 'react';
+import { ChevronRight, ArrowLeft } from 'lucide-react-native';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface SettingsItemProps {
   label: string;
@@ -22,11 +23,25 @@ const SettingsItem = ({ label, onPress, showBorder = true }: SettingsItemProps) 
 
 export default function SettingsMenu() {
   const router = useRouter();
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getRole = async () => {
+      const savedRole = await AsyncStorage.getItem('userRole');
+      setRole(savedRole);
+    };
+    getRole();
+  }, []);
+
+  const isRestaurant = role === 'restaurant';
 
   const settingsItems = [
     { label: 'Terms & Conditions', route: '/(tabs)/settings/terms' },
     { label: 'Policies', route: '/(tabs)/settings/policies' },
-    { label: 'Shop information set up', route: '/ecommerce/shop-info-1' },
+    {
+      label: isRestaurant ? 'Profile Set up' : 'Shop information set up',
+      route: isRestaurant ? '/restaurant/create-profile' : '/ecommerce/shop-info-1',
+    },
     { label: 'Help and Support', route: '/(tabs)/settings/help' },
     { label: 'Notification sound', route: '/(tabs)/settings/notification' },
     { label: 'Change password', route: '/(tabs)/settings/change-password' },
