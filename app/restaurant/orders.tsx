@@ -59,41 +59,111 @@ const RestaurantOrderCard = ({
   orderId: string;
   date: string;
   showMenu?: boolean;
-}) => (
-  <View className="mb-4 rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-sm">
-    <View className="mb-3 flex-row items-center justify-between">
-      <View className="flex-row items-center">
-        <Text className="text-lg font-medium text-[#1E293B]">{name}</Text>
-        <View className="ml-3 rounded-full px-3 py-1" style={{ backgroundColor: statusBg }}>
-          <Text className="text-[10px] font-bold" style={{ color: statusColor }}>
-            {status}
-          </Text>
+}) => {
+  const router = useRouter();
+  const [showOptions, setShowOptions] = useState(false);
+  const [menuLayout, setMenuLayout] = useState({ x: 0, y: 0, w: 0, h: 0 });
+
+  return (
+    <View className="mb-4 rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-sm">
+      <View className="mb-3 flex-row items-center justify-between">
+        <View className="flex-row items-center">
+          <Text className="text-lg font-medium text-[#1E293B]">{name}</Text>
+          <View className="ml-3 rounded-full px-3 py-1" style={{ backgroundColor: statusBg }}>
+            <Text className="text-[10px] font-bold" style={{ color: statusColor }}>
+              {status}
+            </Text>
+          </View>
+        </View>
+        {showMenu && (
+          <TouchableOpacity
+            onPress={(e) => {
+              (e.target as any).measure?.(
+                (_x: number, _y: number, w: number, h: number, px: number, py: number) => {
+                  setMenuLayout({ x: px, y: py, w, h });
+                  setShowOptions(true);
+                }
+              );
+              setShowOptions(true);
+            }}>
+            <MoreHorizontal size={20} color="#94A3B8" />
+          </TouchableOpacity>
+        )}
+      </View>
+
+      <View className="mb-1 flex-row items-center justify-between">
+        <View className="flex-row items-center">
+          <Package size={14} color="#94A3B8" />
+          <Text className="ml-1.5 text-[13px] text-[#64748B]">Items: {items}</Text>
+        </View>
+        <View className="flex-row items-center">
+          <Text className="mr-1.5 text-[13px] text-[#64748B]">{date}</Text>
+          <Clock size={12} color="#94A3B8" />
         </View>
       </View>
-      {showMenu && (
-        <TouchableOpacity>
-          <MoreHorizontal size={20} color="#94A3B8" />
-        </TouchableOpacity>
-      )}
-    </View>
 
-    <View className="mb-1 flex-row items-center justify-between">
       <View className="flex-row items-center">
-        <Package size={14} color="#94A3B8" />
-        <Text className="ml-1.5 text-[13px] text-[#64748B]">Items: {items}</Text>
+        <Receipt size={14} color="#94A3B8" />
+        <Text className="ml-1.5 text-[13px] text-[#64748B]">Order {orderId}</Text>
       </View>
-      <View className="flex-row items-center">
-        <Text className="mr-1.5 text-[13px] text-[#64748B]">{date}</Text>
-        <Clock size={12} color="#94A3B8" />
-      </View>
-    </View>
 
-    <View className="flex-row items-center">
-      <Receipt size={14} color="#94A3B8" />
-      <Text className="ml-1.5 text-[13px] text-[#64748B]">Order {orderId}</Text>
+      {/* 3-Dot Options Modal */}
+      <Modal visible={showOptions} transparent animationType="fade">
+        <Pressable style={StyleSheet.absoluteFill} onPress={() => setShowOptions(false)}>
+          <View
+            style={{
+              position: 'absolute',
+              top: menuLayout.y + menuLayout.h + 8,
+              left: menuLayout.x - 120 + menuLayout.w, // Align right side of modal with right side of button
+              backgroundColor: '#fff',
+              borderRadius: 14,
+              width: 130, // Fixed width to ensure right-alignment works predictably
+              elevation: 4,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.1,
+              shadowRadius: 10,
+            }}>
+            {/* White up-pointing arrow on the right side */}
+            <View
+              style={{
+                position: 'absolute',
+                top: -8,
+                right: 12,
+                width: 0,
+                height: 0,
+                borderLeftWidth: 8,
+                borderRightWidth: 8,
+                borderBottomWidth: 8,
+                borderLeftColor: 'transparent',
+                borderRightColor: 'transparent',
+                borderBottomColor: '#fff',
+              }}
+            />
+            {['Edit', 'Cancell', 'Order details'].map((opt, i) => (
+              <TouchableOpacity
+                key={opt}
+                onPress={() => {
+                  setShowOptions(false);
+                  if (opt === 'Edit') {
+                    router.push('/restaurant/create-order');
+                  }
+                }}
+                style={{
+                  paddingVertical: 12,
+                  paddingHorizontal: 16,
+                  borderBottomWidth: i === 2 ? 0 : 1,
+                  borderBottomColor: '#F1F5F9',
+                }}>
+                <Text className="text-[15px] font-medium text-[#94A3B8]">{opt}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </Pressable>
+      </Modal>
     </View>
-  </View>
-);
+  );
+};
 
 const RequestCard = ({ imageFull = false }: { imageFull?: boolean }) => (
   <View className="mb-6 overflow-hidden rounded-2xl border border-[#F1F5F9] bg-white shadow-sm">
@@ -200,7 +270,9 @@ export default function RestaurantOrders() {
         {/* Orders List & Create Button */}
         <View className="mb-5 flex-row items-center justify-between px-6">
           <Text className="text-[17px] font-bold text-[#64748B]">Orders List</Text>
-          <TouchableOpacity className="flex-row items-center rounded-lg bg-[#FF8C00] px-3.5 py-2 shadow-md shadow-orange-200">
+          <TouchableOpacity
+            onPress={() => router.push('/restaurant/create-order')}
+            className="flex-row items-center rounded-lg bg-[#FF8C00] px-3.5 py-2 shadow-md shadow-orange-200">
             <Text className="mr-1.5 text-base font-medium text-white">+</Text>
             <Text className="text-[13px] font-semibold text-white">Create Order</Text>
           </TouchableOpacity>
