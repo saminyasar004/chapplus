@@ -1,7 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NoRippleTabButton from 'components/no-rippler-pressable';
 import { Tabs } from 'expo-router';
-import { Briefcase, House, Settings2, Package, DollarSign } from 'lucide-react-native';
+import {
+  Briefcase,
+  ClipboardList,
+  DollarSign,
+  House,
+  Package,
+  Settings2,
+  UtensilsCrossed,
+} from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
@@ -17,6 +25,7 @@ export default function Layout() {
   }, []);
 
   const isEcommerce = role === 'ecommerce';
+  const isRestaurant = role === 'restaurant';
 
   return (
     <Tabs
@@ -70,13 +79,15 @@ export default function Layout() {
         name="order"
         options={{
           headerShown: false,
-          title: 'Order',
+          title: isRestaurant ? 'Orders' : 'Order',
           tabBarIcon: ({ color, focused }) => (
             <View className="w-full items-center">
               {focused && (
                 <View className="absolute -top-[18px] h-3 w-10 rounded-b-xl bg-[#FF8C00]" />
               )}
-              {isEcommerce ? (
+              {isRestaurant ? (
+                <ClipboardList size={24} color={color} />
+              ) : isEcommerce ? (
                 <Package size={24} color={color} />
               ) : (
                 <Briefcase size={24} color={color} />
@@ -89,13 +100,15 @@ export default function Layout() {
         name="revenue"
         options={{
           headerShown: false,
-          title: 'Revenue',
+          title: isRestaurant ? 'Menu' : 'Revenue',
           tabBarIcon: ({ color, focused }) => (
             <View className="w-full items-center">
               {focused && (
                 <View className="absolute -top-[18px] h-3 w-10 rounded-b-xl bg-[#FF8C00]" />
               )}
-              {isEcommerce ? (
+              {isRestaurant ? (
+                <UtensilsCrossed size={24} color={color} />
+              ) : isEcommerce ? (
                 <View
                   className={`h-6 w-6 items-center justify-center rounded-md ${focused ? 'bg-[#FF8C00]' : 'bg-[#94A3B8]'}`}>
                   <DollarSign size={16} color="white" strokeWidth={3} />
@@ -105,18 +118,6 @@ export default function Layout() {
               )}
             </View>
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="my-plan"
-        options={{
-          href: null,
         }}
       />
       <Tabs.Screen

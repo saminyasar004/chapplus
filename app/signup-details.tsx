@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from 'assets/images/logo.svg';
 import Layout from 'components/layout';
 import { useRouter } from 'expo-router';
@@ -41,7 +42,11 @@ export default function SignupDetails() {
             </View>
 
             <TouchableOpacity
-              onPress={() => router.push('/verification')}
+              onPress={async () => {
+                // const role = await AsyncStorage.getItem('userRole');
+
+                router.push('/verification');
+              }}
               className="mt-20 h-14 items-center justify-center rounded-xl bg-[#FF8C00]">
               <Text className="text-lg font-bold text-white">Confirm and Create Account</Text>
             </TouchableOpacity>

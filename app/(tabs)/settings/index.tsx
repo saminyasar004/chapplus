@@ -26,7 +26,7 @@ export default function SettingsMenu() {
   const settingsItems = [
     { label: 'Terms & Conditions', route: '/(tabs)/settings/terms' },
     { label: 'Policies', route: '/(tabs)/settings/policies' },
-    { label: 'Shop information set up', route: '/shop-details' },
+    { label: 'Shop information set up', route: '/ecommerce/shop-info-1' },
     { label: 'Help and Support', route: '/(tabs)/settings/help' },
     { label: 'Notification sound', route: '/(tabs)/settings/notification' },
     { label: 'Change password', route: '/(tabs)/settings/change-password' },

@@ -7,10 +7,11 @@ import ProgressBar from './progress-bar';
 interface ShopHeaderProps {
   title: string;
   activeSteps: number;
+  totalSteps?: number;
   onBack?: () => void;
 }
 
-export default function ShopHeader({ title, activeSteps, onBack }: ShopHeaderProps) {
+export default function ShopHeader({ title, activeSteps, totalSteps, onBack }: ShopHeaderProps) {
   const router = useRouter();
 
   return (
@@ -23,7 +24,7 @@ export default function ShopHeader({ title, activeSteps, onBack }: ShopHeaderPro
           <Text className="text-xl font-bold text-[#334155]">{title}</Text>
         </View>
       </View>
-      <ProgressBar activeSteps={activeSteps} />
+      <ProgressBar activeSteps={activeSteps} totalSteps={totalSteps} />
     </View>
   );
 }

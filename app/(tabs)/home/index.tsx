@@ -4,10 +4,18 @@ import HomeOrderItem from 'components/home-order-item';
 import HomeProfileCard from 'components/home-profile-card';
 import Layout from 'components/layout';
 import MerchantHeader from 'components/merchant-header';
-import { useRouter } from 'expo-router';
-import { ChevronRight } from 'lucide-react-native';
+import { router } from 'expo-router';
+import {
+  ChevronRight,
+  Clock,
+  DollarSign,
+  MoreHorizontal,
+  Star,
+  UtensilsCrossed,
+} from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SectionHeader = ({ title }: { title: string }) => (
   <View className="mb-4 flex-row items-center justify-between px-6">
@@ -18,8 +26,134 @@ const SectionHeader = ({ title }: { title: string }) => (
   </View>
 );
 
+// ─── Restaurant Order Card ────────────────────────────────────────
+const RestaurantOrderCard = ({
+  name,
+  status,
+  statusColor,
+  items,
+  orderId,
+  date,
+}: {
+  name: string;
+  status: string;
+  statusColor: string;
+  items: number;
+  orderId: string;
+  date: string;
+}) => (
+  <View className="mb-4 rounded-2xl border border-[#F1F5F9] bg-white px-5 py-4">
+    <View className="flex-row items-center justify-between">
+      <View className="flex-row items-center">
+        <Text className="text-base font-bold text-[#334155]">{name}</Text>
+        <View
+          className="ml-3 rounded-full px-3 py-1"
+          style={{ backgroundColor: statusColor + '20' }}>
+          <Text className="text-xs font-bold" style={{ color: statusColor }}>
+            {status}
+          </Text>
+        </View>
+      </View>
+      <TouchableOpacity>
+        <MoreHorizontal size={20} color="#94A3B8" />
+      </TouchableOpacity>
+    </View>
+    <View className="mt-3 flex-row items-center">
+      <Text className="text-sm text-[#94A3B8]">⊗ Items: {items}</Text>
+    </View>
+    <View className="mt-1 flex-row items-center justify-between">
+      <Text className="text-sm text-[#94A3B8]">☐ Order {orderId}</Text>
+      <View className="flex-row items-center">
+        <Text className="text-sm text-[#94A3B8]">{date}</Text>
+        <Clock size={14} color="#94A3B8" className="ml-1" />
+      </View>
+    </View>
+  </View>
+);
+
+// ─── Restaurant Home Page ────────────────────────────────────────
+const RestaurantHome = () => (
+  <SafeAreaView className="flex-1 bg-white" edges={['top']}>
+    <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+      {/* Header */}
+      <View className="px-6 pb-6 pt-4">
+        <Text className="text-sm text-[#94A3B8]">Good Morning</Text>
+        <Text className="text-xl font-bold text-[#334155]">The Food Room Restaurant</Text>
+      </View>
+
+      {/* Stats Row */}
+      <View className="mb-4 flex-row gap-x-4 px-6">
+        <View className="flex-1 rounded-2xl border border-[#F1F5F9] bg-white p-5">
+          <View className="mb-3 h-10 w-10 items-center justify-center rounded-xl bg-[#FFF7ED]">
+            <UtensilsCrossed size={20} color="#FF8C00" />
+          </View>
+          <Text className="text-2xl font-bold text-[#FF8C00]">12</Text>
+          <Text className="text-sm text-[#94A3B8]">Today's Orders</Text>
+        </View>
+        <View className="flex-1 rounded-2xl border border-[#F1F5F9] bg-white p-5">
+          <View className="mb-3 h-10 w-10 items-center justify-center rounded-xl bg-[#F0FDF4]">
+            <UtensilsCrossed size={20} color="#6D7437" />
+          </View>
+          <Text className="text-2xl font-bold text-[#334155]">14</Text>
+          <Text className="text-sm text-[#94A3B8]">Active Orders</Text>
+        </View>
+      </View>
+
+      {/* Revenue Card */}
+      <View className="mx-6 mb-6 rounded-2xl border border-[#F1F5F9] bg-white p-5">
+        <View className="mb-3 flex-row items-center justify-between">
+          <View className="h-10 w-10 items-center justify-center rounded-xl bg-[#EFF6FF]">
+            <DollarSign size={20} color="#006FFF" />
+          </View>
+          <View className="flex-row items-center">
+            <Star size={16} color="#FBBF24" fill="#FBBF24" />
+            <Text className="ml-1 text-sm font-bold text-[#334155]">4.2</Text>
+          </View>
+        </View>
+        <Text className="text-2xl font-bold text-[#006FFF]">$2,450</Text>
+        <Text className="text-sm text-[#94A3B8]">Total Revenue</Text>
+      </View>
+
+      {/* Recent Orders */}
+      <View className="mb-4 flex-row items-center justify-between px-6">
+        <Text className="text-lg font-bold text-[#334155]">Recent Orders</Text>
+        <TouchableOpacity className="flex-row items-center">
+          <Text className="text-sm font-medium text-[#FF8C00]">View All</Text>
+          <ChevronRight size={16} color="#FF8C00" />
+        </TouchableOpacity>
+      </View>
+
+      <View className="px-6 pb-32">
+        <RestaurantOrderCard
+          name="Sarah Jonson"
+          status="Preparing"
+          statusColor="#FF8C00"
+          items={2}
+          orderId="#2043"
+          date="12 Feb · 8:30 PM"
+        />
+        <RestaurantOrderCard
+          name="Devon Lane"
+          status="Ready"
+          statusColor="#22C55E"
+          items={2}
+          orderId="#2043"
+          date="12 Feb · 8:30 PM"
+        />
+        <RestaurantOrderCard
+          name="Sarah Jonson"
+          status="Complete"
+          statusColor="#6D7437"
+          items={2}
+          orderId="#2043"
+          date="12 Feb · 8:30 PM"
+        />
+      </View>
+    </ScrollView>
+  </SafeAreaView>
+);
+
 export default function Index() {
-  const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
@@ -30,6 +164,10 @@ export default function Index() {
     getRole();
   }, []);
 
+  if (role === 'restaurant') {
+    return <RestaurantHome />;
+  }
+
   if (role === 'ecommerce') {
     return (
       <View className="flex-1 bg-white">
@@ -39,7 +177,7 @@ export default function Index() {
 
           <View className="mb-0 px-6">
             <TouchableOpacity
-              onPress={() => router.push('/product-management')}
+              onPress={() => router.push('/ecommerce/product-management')}
               className="flex-row items-center justify-between rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-sm">
               <Text className="text-xl font-bold text-[#475569]">Product management</Text>
               <ChevronRight size={20} color="#94A3B8" />

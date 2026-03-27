@@ -87,7 +87,9 @@ export default function Verification() {
           <TouchableOpacity
             onPress={() => {
               if (userRole === 'ecommerce') {
-                router.replace('/shop-info-1');
+                router.replace('/ecommerce/shop-info-1');
+              } else if (userRole === 'restaurant') {
+                router.replace('/restaurant/create-profile');
               } else {
                 router.replace('/(tabs)');
               }

@@ -294,7 +294,7 @@ export default function OrderManagement() {
                   <TouchableOpacity
                     key={item.id}
                     activeOpacity={0.9}
-                    onPress={() => router.push('/product-details')}
+                    onPress={() => router.push('/ecommerce/product-details')}
                     className="mx-6 mb-6 flex-row items-start border-b border-[#F1F5F9] pb-6">
                     <Image
                       source={{
@@ -343,7 +343,7 @@ export default function OrderManagement() {
                   <TouchableOpacity
                     key={item.id}
                     activeOpacity={0.9}
-                    onPress={() => router.push('/product-details')}
+                    onPress={() => router.push('/ecommerce/product-details')}
                     className="mx-6 mb-6 flex-row items-center space-x-5 border-b border-[#F1F5F9] pb-6">
                     <View className="h-32 w-32 rounded-3xl bg-[#F8FAFC] p-3">
                       <Image
@@ -384,7 +384,7 @@ export default function OrderManagement() {
                   activeOpacity={0.9}
                   onPress={() =>
                     router.push({
-                      pathname: '/product-details',
+                      pathname: '/ecommerce/product-details',
                       params: { type: 'delivered' },
                     })
                   }
@@ -402,7 +402,7 @@ export default function OrderManagement() {
                         className="rounded-full bg-[#FF8C00] px-5 py-2"
                         onPress={() =>
                           router.push({
-                            pathname: '/product-details',
+                            pathname: '/ecommerce/product-details',
                             params: { type: 'delivered' },
                           })
                         }>
@@ -419,7 +419,7 @@ export default function OrderManagement() {
                 <TouchableOpacity
                   key={item.id}
                   activeOpacity={0.9}
-                  onPress={() => router.push('/product-details')}
+                  onPress={() => router.push('/ecommerce/product-details')}
                   className="mx-6 mb-6 flex-row items-center border-b border-[#F1F5F9] pb-6">
                   <Image source={{ uri: item.image }} className="h-28 w-28 rounded-2xl" />
                   <View className="ml-5 flex-1">
