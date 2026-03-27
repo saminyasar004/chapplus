@@ -122,7 +122,16 @@ export default function Layout() {
       <Tabs.Screen
         name="settings"
         options={{
-          href: null,
+          headerShown: false,
+          title: 'Settings',
+          tabBarIcon: ({ color, focused }) => (
+            <View className="w-full items-center">
+              {focused && (
+                <View className="absolute -top-[18px] h-3 w-10 rounded-b-xl bg-[#FF8C00]" />
+              )}
+              <Settings2 size={24} color={color} />
+            </View>
+          ),
         }}
       />
     </Tabs>
