@@ -9,6 +9,7 @@ import {
   Package,
   Settings2,
   UtensilsCrossed,
+  LayoutGrid,
 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
@@ -97,18 +98,32 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="revenue"
+        name="menu"
         options={{
           headerShown: false,
-          title: isRestaurant ? 'Menu' : 'Revenue',
+          title: 'Menu',
+          href: isRestaurant ? undefined : null,
           tabBarIcon: ({ color, focused }) => (
             <View className="w-full items-center">
               {focused && (
                 <View className="absolute -top-[18px] h-3 w-10 rounded-b-xl bg-[#FF8C00]" />
               )}
-              {isRestaurant ? (
-                <UtensilsCrossed size={24} color={color} />
-              ) : isEcommerce ? (
+              <UtensilsCrossed size={24} color={color} />
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="revenue"
+        options={{
+          headerShown: false,
+          title: 'Revenue',
+          tabBarIcon: ({ color, focused }) => (
+            <View className="w-full items-center">
+              {focused && (
+                <View className="absolute -top-[18px] h-3 w-10 rounded-b-xl bg-[#FF8C00]" />
+              )}
+              {isEcommerce || isRestaurant ? (
                 <View
                   className={`h-6 w-6 items-center justify-center rounded-md ${focused ? 'bg-[#FF8C00]' : 'bg-[#94A3B8]'}`}>
                   <DollarSign size={16} color="white" strokeWidth={3} />
