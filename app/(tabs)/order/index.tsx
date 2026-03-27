@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import {
   Search,
@@ -8,7 +9,8 @@ import {
   ArrowLeft,
   ChevronLeft,
 } from 'lucide-react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import RestaurantOrders from '../../restaurant/orders';
 import {
   Image,
   ScrollView,
@@ -26,6 +28,16 @@ const { width } = Dimensions.get('window');
 
 export default function OrderManagement() {
   const router = useRouter();
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getRole = async () => {
+      const savedRole = await AsyncStorage.getItem('userRole');
+      setRole(savedRole);
+    };
+    getRole();
+  }, []);
+
   const [activeTab, setActiveTab] = useState<'Active' | 'Delivered' | 'Cancellation'>('Active');
   const [subTab, setSubTab] = useState<'Ready to handoff' | 'Returns and Cancells'>(
     'Ready to handoff'
@@ -217,6 +229,10 @@ export default function OrderManagement() {
         'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
     },
   ];
+
+  if (role === 'restaurant') {
+    return <RestaurantOrders />;
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
