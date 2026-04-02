@@ -15,6 +15,7 @@ import {
   Bus,
   ArrowRight,
   MapPinOff,
+  MoreHorizontal,
 } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import RestaurantOrders from '../../restaurant/orders';
@@ -216,33 +217,68 @@ const HotelBookings = () => {
 };
 
 // ─── Bus Management ─────────────────────────────────────────────
-const BusCard = ({ plate, seats, active, image }: any) => (
-  <View className="mb-4 flex-row items-center rounded-2xl border border-[#F1F5F9] bg-white p-4 shadow-sm shadow-slate-100">
-    <View className="h-20 w-24 overflow-hidden rounded-xl bg-gray-100">
-      <Image source={{ uri: image }} className="h-full w-full" />
-    </View>
-    <View className="ml-4 flex-1">
-      <View className="flex-row items-center justify-between">
-        <Text className="text-base font-bold text-[#334155]">{plate}</Text>
-        <TouchableOpacity>
-          <MoreVertical size={20} color="#94A3B8" />
-        </TouchableOpacity>
+const BusCard = ({ plate, seats, active, image, onEdit, onDelete }: any) => {
+  const [showOptions, setShowOptions] = useState(false);
+
+  return (
+    <View className="mb-4 flex-row items-center rounded-2xl border border-[#F1F5F9] bg-white p-4 shadow-sm shadow-slate-100">
+      <View className="h-20 w-24 overflow-hidden rounded-xl bg-gray-100">
+        <Image source={{ uri: image }} className="h-full w-full" />
       </View>
-      <Text className="mt-1 text-sm text-[#94A3B8]">{seats} Seats</Text>
-      <View className="mt-2 flex-row items-center justify-between">
-        <View className="rounded-full bg-[#F0FDF4] px-3 py-1">
-          <Text className="text-[10px] font-bold uppercase text-[#22C55E]">
-            {active ? 'Active' : 'Inactive'}
-          </Text>
+      <View className="ml-4 flex-1">
+        <View className="flex-row items-center justify-between">
+          <Text className="text-base font-bold text-[#334155]">{plate}</Text>
+          <View className="relative">
+            <TouchableOpacity onPress={() => setShowOptions(!showOptions)}>
+              <MoreHorizontal size={20} color="#94A3B8" />
+            </TouchableOpacity>
+            {showOptions && (
+              <View
+                className="absolute right-0 top-8 z-50 w-32 rounded-2xl border border-slate-50 bg-white p-2 shadow-xl shadow-slate-200"
+                style={{ elevation: 5 }}>
+                <View
+                  className="absolute -top-2 right-2 h-4 w-4 rotate-45 border-l border-t border-slate-50 bg-white"
+                  style={{ backgroundColor: 'white' }}
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    setShowOptions(false);
+                    onDelete();
+                  }}
+                  className="p-3">
+                  <Text className="text-sm font-medium text-[#94A3B8]">Delete</Text>
+                </TouchableOpacity>
+                <View className="mx-2 h-[1px] bg-[#F1F5F9]" />
+                <TouchableOpacity
+                  onPress={() => {
+                    setShowOptions(false);
+                    onEdit();
+                  }}
+                  className="p-3">
+                  <Text className="text-sm font-medium text-[#94A3B8]">Edit</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
         </View>
-        <View
-          className={`h-5 w-10 justify-center rounded-full px-1 ${active ? 'bg-[#FF8C00]' : 'bg-[#E2E8F0]'}`}>
-          <View className={`h-3 w-3 rounded-full bg-white ${active ? 'self-end' : 'self-start'}`} />
+        <Text className="mt-1 text-sm text-[#94A3B8]">{seats} Seats</Text>
+        <View className="mt-2 flex-row items-center justify-between">
+          <View className="rounded-full bg-[#F0FDF4] px-3 py-1">
+            <Text className="text-[10px] font-bold uppercase text-[#22C55E]">
+              {active ? 'Active' : 'Inactive'}
+            </Text>
+          </View>
+          <View
+            className={`h-5 w-10 justify-center rounded-full px-1 ${active ? 'bg-[#FF8C00]' : 'bg-[#E2E8F0]'}`}>
+            <View
+              className={`h-3 w-3 rounded-full bg-white ${active ? 'self-end' : 'self-start'}`}
+            />
+          </View>
         </View>
       </View>
     </View>
-  </View>
-);
+  );
+};
 
 const TripCard = ({ from, to, seats, date }: any) => (
   <View className="mb-4 rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-sm shadow-slate-100">
@@ -271,6 +307,7 @@ const TripCard = ({ from, to, seats, date }: any) => (
 );
 
 const BusManagement = () => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<'Buses' | 'Trip' | 'Bookings'>('Buses');
   const [isEmpty, setIsEmpty] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -312,7 +349,9 @@ const BusManagement = () => {
           <ArrowLeft size={24} color="#1E293B" />
         </TouchableOpacity>
         <Text className="text-xl font-bold text-[#848F4B]">{activeTab}</Text>
-        <TouchableOpacity className="flex-row items-center rounded-lg border border-[#F1F5F9] bg-white px-3 py-1.5 shadow-sm">
+        <TouchableOpacity
+          onPress={() => router.push('/bus/add-new')}
+          className="flex-row items-center rounded-lg border border-[#F1F5F9] bg-white px-3 py-1.5 shadow-sm">
           <Text className="text-xs font-bold text-[#64748B]">Add New</Text>
           <Plus size={14} color="#64748B" className="ml-1" />
         </TouchableOpacity>
@@ -377,7 +416,12 @@ const BusManagement = () => {
           ) : (
             <View className="px-6 pb-32">
               {buses.map((bus, idx) => (
-                <BusCard key={idx} {...bus} />
+                <BusCard
+                  key={idx}
+                  {...bus}
+                  onEdit={() => router.push('/bus/edit')}
+                  onDelete={() => {}}
+                />
               ))}
               <TouchableOpacity onPress={() => setIsEmpty(true)} className="mt-4 items-center">
                 <Text className="text-xs text-slate-300">Show empty state (demo)</Text>
@@ -404,6 +448,7 @@ const BusManagement = () => {
 
 // ─── Main Order Management ─────────────────────────────────────
 export default function OrderManagement() {
+  const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
