@@ -4,7 +4,7 @@ import HomeOrderItem from 'components/home-order-item';
 import HomeProfileCard from 'components/home-profile-card';
 import Layout from 'components/layout';
 import MerchantHeader from 'components/merchant-header';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import {
   ChevronRight,
   Clock,
@@ -17,8 +17,12 @@ import {
   CheckCircle2,
   ArrowRight,
   MapPin,
+  Bus,
+  Ticket,
+  Bell,
+  TrendingUp,
 } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Image,
   Modal,
@@ -70,6 +74,7 @@ const RestaurantOrderCard = ({
   const [currentStatus, setCurrentStatus] = useState(initialStatus);
   const [currentColor, setCurrentColor] = useState(initialColor);
   const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
+  const anchorRef = useRef<View>(null);
 
   const handleStatusSelect = (label: string, color: string) => {
     setCurrentStatus(label);
@@ -91,14 +96,12 @@ const RestaurantOrderCard = ({
           </View>
         </View>
         <TouchableOpacity
-          onPress={(e) => {
-            (e.target as any).measure?.(
-              (_x: number, _y: number, _w: number, _h: number, px: number, py: number) => {
-                setMenuPos({ x: px, y: py });
-                setShowDropdown(true);
-              }
-            );
-            setShowDropdown(true);
+          ref={anchorRef}
+          onPress={() => {
+            anchorRef.current?.measure((_x, _y, _w, _h, px, py) => {
+              setMenuPos({ x: px, y: py });
+              setShowDropdown(true);
+            });
           }}>
           <MoreHorizontal size={20} color="#94A3B8" />
         </TouchableOpacity>
@@ -114,27 +117,36 @@ const RestaurantOrderCard = ({
         </View>
       </View>
 
-      {/* Status Dropdown Modal */}
       <Modal visible={showDropdown} transparent animationType="fade">
-        <Pressable style={dropdownStyles.overlay} onPress={() => setShowDropdown(false)}>
-          <View style={[dropdownStyles.container, { top: menuPos.y - 10, right: 24 }]}>
-            {/* Triangle arrow */}
-            <View style={dropdownStyles.arrow} />
-            <View style={dropdownStyles.menu}>
+        <Pressable className="flex-1 bg-black/30" onPress={() => setShowDropdown(false)}>
+          <View
+            style={{
+              position: 'absolute',
+              top: menuPos.y - 10,
+              right: 24,
+              alignItems: 'flex-end',
+            }}>
+            <View
+              style={{
+                width: 0,
+                height: 0,
+                borderLeftWidth: 10,
+                borderRightWidth: 10,
+                borderBottomWidth: 10,
+                borderLeftColor: 'transparent',
+                borderRightColor: 'transparent',
+                borderBottomColor: '#FF8C00',
+                marginRight: 12,
+              }}
+            />
+            <View className="w-40 overflow-hidden rounded-xl border-2 border-[#FF8C00] bg-white">
               {STATUS_OPTIONS.map((opt, i) => (
                 <TouchableOpacity
                   key={opt.label}
                   onPress={() => handleStatusSelect(opt.label, opt.color)}
-                  style={[
-                    dropdownStyles.option,
-                    i < STATUS_OPTIONS.length - 1 && dropdownStyles.optionBorder,
-                    currentStatus === opt.label && dropdownStyles.optionActive,
-                  ]}>
+                  className={`px-4 py-[14px] ${i < STATUS_OPTIONS.length - 1 ? 'border-b border-[#F1F5F9]' : ''} ${currentStatus === opt.label ? 'bg-[#FFF7ED]' : ''}`}>
                   <Text
-                    style={[
-                      dropdownStyles.optionText,
-                      currentStatus === opt.label && { color: '#FF8C00', fontWeight: '700' },
-                    ]}>
+                    className={`text-[15px] font-medium ${currentStatus === opt.label ? 'font-bold text-[#FF8C00]' : 'text-[#94A3B8]'}`}>
                     {opt.label}
                   </Text>
                 </TouchableOpacity>
@@ -147,57 +159,9 @@ const RestaurantOrderCard = ({
   );
 };
 
-const dropdownStyles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-  },
-  container: {
-    position: 'absolute',
-    alignItems: 'flex-end',
-    paddingRight: 4,
-  },
-  arrow: {
-    width: 0,
-    height: 0,
-    borderLeftWidth: 10,
-    borderRightWidth: 10,
-    borderBottomWidth: 10,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: '#FF8C00',
-    alignSelf: 'flex-end',
-    marginRight: 12,
-  },
-  menu: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: '#FF8C00',
-    width: 160,
-    overflow: 'hidden',
-  },
-  option: {
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-  },
-  optionBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  optionActive: {
-    backgroundColor: '#FFF7ED',
-  },
-  optionText: {
-    fontSize: 15,
-    color: '#94A3B8',
-    fontWeight: '500',
-  },
-});
-
 // ─── Restaurant Home Page ────────────────────────────────────────
 const RestaurantHome = () => (
-  <SafeAreaView className="flex-1 bg-white" edges={['top']}>
+  <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top']}>
     <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
       {/* Header */}
       <View className="px-6 pb-6 pt-4">
@@ -238,9 +202,7 @@ const RestaurantHome = () => (
         <Text className="text-sm text-[#94A3B8]">Total Revenue</Text>
       </View>
 
-      {/* Recent Orders */}
       <SectionHeader title="Recent Orders" />
-
       <View className="px-6 pb-32">
         <RestaurantOrderCard
           name="Sarah Jonson"
@@ -264,21 +226,7 @@ const RestaurantHome = () => (
 );
 
 // ─── Hotel Home Page ──────────────────────────────────────────
-const BookingCard = ({
-  name,
-  status,
-  statusColor,
-  guests,
-  room,
-  date,
-}: {
-  name: string;
-  status: string;
-  statusColor: string;
-  guests: number;
-  room: string;
-  date: string;
-}) => (
+const BookingCard = ({ name, status, statusColor, guests, room, date }: any) => (
   <View className="mb-4 rounded-2xl border border-[#F1F5F9] bg-white px-5 py-4 shadow-sm shadow-slate-100">
     <View className="flex-row items-center justify-between">
       <View className="flex-row items-center">
@@ -291,11 +239,10 @@ const BookingCard = ({
           </Text>
         </View>
       </View>
-      <TouchableOpacity p-1>
+      <TouchableOpacity>
         <MoreHorizontal size={20} color="#94A3B8" />
       </TouchableOpacity>
     </View>
-
     <View className="mt-4 flex-row items-start">
       <View className="mr-3 mt-1">
         <Users size={16} color="#94A3B8" />
@@ -318,12 +265,11 @@ const BookingCard = ({
 );
 
 const HotelHome = () => {
+  const router = useRouter();
   const [isProfileComplete, setIsProfileComplete] = useState(false);
-
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['top']}>
+    <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top']}>
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        {/* Header */}
         <View className="flex-row items-center justify-between px-6 pb-6 pt-4">
           <View>
             <Text className="text-sm text-[#94A3B8]">Good Morning</Text>
@@ -336,64 +282,61 @@ const HotelHome = () => {
             </View>
           )}
         </View>
-
-        {/* Stats Row */}
         <View className="mb-4 flex-row flex-wrap gap-4 px-6">
-          <View className="h-40 flex-[1_0_46%] justify-between rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-sm shadow-slate-100">
-            <View className="h-10 w-10 items-center justify-center rounded-xl bg-[#FFF7ED]">
-              <Calendar size={20} color="#FF8C00" />
+          {[
+            {
+              label: 'Booked',
+              val: isProfileComplete ? '12' : '0',
+              icon: Calendar,
+              bg: '#FFF7ED',
+              color: '#FF8C00',
+            },
+            {
+              label: 'Current Guests',
+              val: isProfileComplete ? '14' : '0',
+              icon: Users,
+              bg: '#F0FDF4',
+              color: '#848F4B',
+            },
+            {
+              label: 'Available Room',
+              val: isProfileComplete ? '05' : '0',
+              icon: CheckCircle2,
+              bg: '#DCFCE7',
+              color: '#22C55E',
+            },
+            {
+              label: 'Revenue Today',
+              val: isProfileComplete ? '$2,450' : '0',
+              icon: DollarSign,
+              bg: '#EFF6FF',
+              color: '#006FFF',
+            },
+          ].map((stat, i) => (
+            <View
+              key={i}
+              className="h-40 flex-[1_0_46%] justify-between rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-sm shadow-slate-100">
+              <View
+                className="h-10 w-10 items-center justify-center rounded-xl"
+                style={{ backgroundColor: stat.bg }}>
+                <stat.icon size={20} color={stat.color} />
+              </View>
+              <View>
+                <Text className="text-2xl font-bold" style={{ color: stat.color }}>
+                  {stat.val}
+                </Text>
+                <Text className="text-xs font-medium text-[#94A3B8]">{stat.label}</Text>
+              </View>
             </View>
-            <View>
-              <Text className="text-2xl font-bold text-[#FF8C00]">
-                {isProfileComplete ? '12' : '0'}
-              </Text>
-              <Text className="text-xs font-medium text-[#94A3B8]">Booked</Text>
-            </View>
-          </View>
-          <View className="h-40 flex-[1_0_46%] justify-between rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-sm shadow-slate-100">
-            <View className="h-10 w-10 items-center justify-center rounded-xl bg-[#F0FDF4]">
-              <Users size={20} color="#848F4B" />
-            </View>
-            <View>
-              <Text className="text-2xl font-bold text-[#848F4B]">
-                {isProfileComplete ? '14' : '0'}
-              </Text>
-              <Text className="text-xs font-medium text-[#94A3B8]">Current Guests</Text>
-            </View>
-          </View>
-          <View className="h-40 flex-[1_0_46%] justify-between rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-sm shadow-slate-100">
-            <View className="h-10 w-10 items-center justify-center rounded-xl bg-[#DCFCE7]">
-              <CheckCircle2 size={20} color="#22C55E" />
-            </View>
-            <View>
-              <Text className="text-2xl font-bold text-[#22C55E]">
-                {isProfileComplete ? '05' : '0'}
-              </Text>
-              <Text className="text-xs font-medium text-[#94A3B8]">Available Room</Text>
-            </View>
-          </View>
-          <View className="h-40 flex-[1_0_46%] justify-between rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-sm shadow-slate-100">
-            <View className="h-10 w-10 items-center justify-center rounded-xl bg-[#EFF6FF]">
-              <DollarSign size={20} color="#006FFF" />
-            </View>
-            <View>
-              <Text className="text-2xl font-bold text-[#006FFF]">
-                {isProfileComplete ? '$2,450' : '0'}
-              </Text>
-              <Text className="text-xs font-medium text-[#94A3B8]">Revenue Today</Text>
-            </View>
-          </View>
+          ))}
         </View>
-
         {!isProfileComplete ? (
-          /* Profile Incomplete View */
           <View className="mt-6 px-6">
             <Text className="text-lg font-bold text-[#848F4B]">Complete Your Hotel Profile</Text>
             <Text className="mt-4 text-[13px] leading-5 text-[#94A3B8]">
               Welcome! To start receiving bookings, please complete your hotel profile. Add your
               hotel details, rooms, photos, and policies so guests can view and book your hotel.
             </Text>
-
             <View className="mt-10 items-center">
               <Image
                 source={{
@@ -403,11 +346,7 @@ const HotelHome = () => {
                 resizeMode="contain"
               />
               <TouchableOpacity
-                onPress={() => {
-                  // Simulate completion for testing
-                  // setIsProfileComplete(true);
-                  router.push('/hotel/create-profile');
-                }}
+                onPress={() => router.push('/hotel/create-profile')}
                 className="mt-8 flex-row items-center rounded-2xl bg-[#F4F4F5] px-10 py-4 active:bg-gray-200">
                 <Text className="text-[17px] font-bold text-[#334155]">Create Profile</Text>
                 <ArrowRight size={20} color="#334155" className="ml-2" />
@@ -415,7 +354,6 @@ const HotelHome = () => {
             </View>
           </View>
         ) : (
-          /* Recent Bookings View */
           <View className="mt-6 pb-32">
             <SectionHeader title="Recent Booking" />
             <View className="px-6">
@@ -435,14 +373,149 @@ const HotelHome = () => {
                 room="Regular Room (301)"
                 date="10 Feb"
               />
-              <BookingCard
-                name="Sarah Jonson"
-                status="Upcoming"
-                statusColor="#22C55E"
-                guests={2}
-                room="Regular Room (301)"
-                date="12 Feb-18 Feb"
+            </View>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+// ─── Bus Home Page ──────────────────────────────────────────
+const BusHome = () => {
+  const router = useRouter();
+  const [isProfileComplete, setIsProfileComplete] = useState(false);
+  return (
+    <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top']}>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        {!isProfileComplete ? (
+          <View className="px-6 pb-6 pt-4">
+            <Text className="text-sm text-[#94A3B8]">Good Morning</Text>
+            <Text className="text-xl font-bold text-[#334155]">The Grand Meridian</Text>
+          </View>
+        ) : (
+          <View className="flex-row items-center justify-between px-6 pb-6 pt-4">
+            <View className="flex-row items-center">
+              <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-[#FFF7ED]">
+                <Image
+                  source={{ uri: 'https://chapplus.com/logo.png' }}
+                  className="h-8 w-8"
+                  style={{ resizeMode: 'contain' }}
+                />
+              </View>
+              <Text className="text-2xl font-bold text-[#848F4B]">
+                Chap<Text className="text-[#FF8C00]">Plus</Text>
+              </Text>
+            </View>
+            <View className="flex-row items-center gap-x-4">
+              <TouchableOpacity className="relative p-2">
+                <Bell size={24} color="#334155" />
+                <View className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-500" />
+              </TouchableOpacity>
+              <Image
+                source={{
+                  uri: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=100&auto=format&fit=crop',
+                }}
+                className="h-10 w-10 rounded-full"
               />
+            </View>
+          </View>
+        )}
+
+        <View className="mb-4 flex-row flex-wrap gap-4 px-6">
+          <View className="h-32 flex-[1_0_46%] justify-between rounded-3xl border border-[#F1F5F9] bg-white p-5 shadow-sm shadow-slate-100">
+            <View className="h-10 w-10 items-center justify-center rounded-xl bg-[#FFF7ED]">
+              <Bus size={20} color="#FF8C00" />
+            </View>
+            <View>
+              <Text className="text-2xl font-bold text-[#6D7437]">
+                {isProfileComplete ? '20' : '0'}
+              </Text>
+              <Text className="text-xs font-medium text-[#94A3B8]">Total Buses</Text>
+            </View>
+          </View>
+          <View className="h-32 flex-[1_0_46%] justify-between rounded-3xl border border-[#F1F5F9] bg-white p-5 shadow-sm shadow-slate-100">
+            <View className="h-10 w-10 items-center justify-center rounded-xl bg-[#F0FDF4]">
+              <Ticket size={20} color="#6D7437" />
+            </View>
+            <View>
+              <Text className="text-2xl font-bold text-[#6D7437]">
+                {isProfileComplete ? '76' : '0'}
+              </Text>
+              <Text className="text-xs font-medium text-[#94A3B8]">Published Trip</Text>
+            </View>
+          </View>
+          <View className="w-full rounded-3xl border border-[#F1F5F9] bg-white p-5 shadow-sm shadow-slate-100">
+            <View className="mb-3 flex-row items-center justify-between">
+              <View className="h-10 w-10 items-center justify-center rounded-xl bg-[#EFF6FF]">
+                <DollarSign size={20} color="#006FFF" />
+              </View>
+              <View className="flex-row items-center">
+                <Star size={16} color="#FBBF24" fill="#FBBF24" />
+                <Text className="ml-1 text-sm font-bold text-[#334155]">4.2</Text>
+              </View>
+            </View>
+            <Text className="text-2xl font-bold text-[#006FFF]">
+              {isProfileComplete ? '$12,450' : '$0'}
+            </Text>
+            <View className="mt-1 flex-row items-center justify-between">
+              <Text className="text-sm font-medium text-[#94A3B8]">Total</Text>
+              <View className="flex-row items-center">
+                <TrendingUp size={14} color="#94A3B8" />
+                <Text className="ml-1 text-xs text-[#94A3B8]">
+                  +{isProfileComplete ? '15' : '0'}% from yesterday
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {!isProfileComplete ? (
+          <View className="mt-6 px-6">
+            <Text className="text-lg font-bold text-[#848F4B]">Complete Your Company Profile</Text>
+            <Text className="mt-4 text-[13px] leading-5 text-[#94A3B8]">
+              Welcome! To start receiving bookings, please complete your company profile. Add your
+              bus details, seats, photos, and policies so passengers can view and book your bus.
+            </Text>
+            <View className="mt-10 items-center">
+              <Image
+                source={{
+                  uri: 'https://img.freepik.com/free-vector/hotel-staff-concept-illustration_114360-14309.jpg',
+                }}
+                className="h-64 w-64"
+                resizeMode="contain"
+              />
+              <TouchableOpacity
+                onPress={() => router.push('/bus/create-profile')}
+                className="mt-8 flex-row items-center rounded-2xl bg-[#F4F4F5] px-10 py-4 active:bg-gray-200">
+                <Text className="text-[17px] font-bold text-[#334155]">Create Profile</Text>
+                <ArrowRight size={20} color="#334155" className="ml-2" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : (
+          <View className="mt-8 pb-32">
+            <View className="mb-4 flex-row items-center justify-between px-6">
+              <Text className="text-lg font-bold text-[#334155]">Recent Booking</Text>
+              <TouchableOpacity className="flex-row items-center">
+                <Text className="text-sm font-medium text-[#94A3B8]">View All</Text>
+                <ChevronRight size={16} color="#94A3B8" />
+              </TouchableOpacity>
+            </View>
+            <View className="gap-y-4 px-6">
+              {[1236, 1235, 1234].map((id) => (
+                <View
+                  key={id}
+                  className="flex-row items-start rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-sm shadow-slate-50">
+                  <View className="mr-3 mt-2 h-2 w-2 rounded-full bg-[#94A3B8]" />
+                  <View>
+                    <Text className="text-[15px] font-medium text-[#64748B]">
+                      New booking #{id} for NY-Boston route
+                    </Text>
+                    <Text className="mt-1 text-xs text-[#94A3B8]">5 min ago</Text>
+                  </View>
+                </View>
+              ))}
             </View>
           </View>
         )}
@@ -452,8 +525,8 @@ const HotelHome = () => {
 };
 
 export default function Index() {
+  const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
-
   useEffect(() => {
     const getRole = async () => {
       const savedRole = await AsyncStorage.getItem('userRole');
@@ -462,13 +535,9 @@ export default function Index() {
     getRole();
   }, []);
 
-  if (role === 'hotel') {
-    return <HotelHome />;
-  }
-
-  if (role === 'restaurant') {
-    return <RestaurantHome />;
-  }
+  if (role === 'hotel') return <HotelHome />;
+  if (role === 'restaurant') return <RestaurantHome />;
+  if (role === 'bus') return <BusHome />;
 
   if (role === 'ecommerce') {
     return (
@@ -476,7 +545,6 @@ export default function Index() {
         <MerchantHeader />
         <Layout>
           <HomeProfileCard />
-
           <View className="mb-0 px-6">
             <TouchableOpacity
               onPress={() => router.push('/ecommerce/product-management')}
@@ -485,7 +553,6 @@ export default function Index() {
               <ChevronRight size={20} color="#94A3B8" />
             </TouchableOpacity>
           </View>
-
           <View className="mb-8 mt-4">
             <SectionHeader title="New Orders" showViewAll={false} />
             <View className="px-6">
@@ -507,7 +574,6 @@ export default function Index() {
               />
             </View>
           </View>
-
           <View className="mb-8">
             <SectionHeader title="Upcoming Delivery person" showViewAll={false} />
             <View className="px-6">
@@ -526,7 +592,6 @@ export default function Index() {
               />
             </View>
           </View>
-          {/* Spacer for bottom navigation */}
           <View className="h-32" />
         </Layout>
       </View>

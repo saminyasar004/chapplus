@@ -12,6 +12,7 @@ import {
   LayoutGrid,
   Calendar,
   Bed,
+  Bus,
 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
@@ -30,6 +31,7 @@ export default function Layout() {
   const isEcommerce = role === 'ecommerce';
   const isRestaurant = role === 'restaurant';
   const isHotel = role === 'hotel';
+  const isBus = role === 'bus';
 
   return (
     <Tabs
@@ -83,7 +85,7 @@ export default function Layout() {
         name="order"
         options={{
           headerShown: false,
-          title: isRestaurant ? 'Orders' : isHotel ? 'Booking' : 'Order',
+          title: isRestaurant ? 'Orders' : isHotel ? 'Booking' : isBus ? 'Management' : 'Order',
           tabBarIcon: ({ color, focused }) => (
             <View className="w-full items-center">
               {focused && (
@@ -95,6 +97,8 @@ export default function Layout() {
                 <Calendar size={24} color={color} />
               ) : isEcommerce ? (
                 <Package size={24} color={color} />
+              ) : isBus ? (
+                <Bus size={24} color={color} />
               ) : (
                 <Briefcase size={24} color={color} />
               )}
@@ -132,7 +136,7 @@ export default function Layout() {
               {focused && (
                 <View className="absolute -top-[18px] h-3 w-10 rounded-b-xl bg-[#FF8C00]" />
               )}
-              {isEcommerce || isRestaurant || isHotel ? (
+              {isEcommerce || isRestaurant || isHotel || isBus ? (
                 <View
                   className={`h-6 w-6 items-center justify-center rounded-md ${focused ? 'bg-[#FF8C00]' : 'bg-[#94A3B8]'}`}>
                   <DollarSign size={16} color="white" strokeWidth={3} />

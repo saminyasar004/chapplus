@@ -92,8 +92,10 @@ export default function Verification() {
                 router.replace('/restaurant/create-profile');
               } else if (userRole === 'hotel') {
                 router.replace('/hotel/create-profile');
+              } else if (userRole === 'bus') {
+                router.replace('/bus/create-profile');
               } else {
-                router.replace('/(tabs)');
+                router.replace('/(tabs)/home');
               }
             }}
             className="h-14 w-full items-center justify-center rounded-xl bg-[#FF8C00] shadow-lg shadow-orange-500/30">

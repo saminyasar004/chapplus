@@ -12,19 +12,13 @@ import {
   ChevronDown,
   ChevronRight,
   Plus,
+  Bus,
+  ArrowRight,
+  MapPinOff,
 } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import RestaurantOrders from '../../restaurant/orders';
-import {
-  Image,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Modal,
-  Pressable,
-} from 'react-native';
+import { Image, ScrollView, Text, TextInput, TouchableOpacity, View, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // ─── Hotel Booking Card ──────────────────────────────────────────
@@ -92,7 +86,6 @@ const HotelBookings = () => {
   const [isDataEmpty, setIsDataEmpty] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Dialog states
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showReachModal, setShowReachModal] = useState(false);
@@ -115,56 +108,14 @@ const HotelBookings = () => {
       room: 'Regular Room (301)',
       date: '10 Feb',
     },
-    {
-      name: 'Sarah Jonson',
-      status: 'Cancellation requested',
-      statusColor: '#EF4444',
-      guests: 2,
-      room: 'Regular Room (301)',
-      date: '12 Feb-18 Feb',
-    },
-    {
-      name: 'Devon Lane',
-      status: 'Cancelled',
-      statusColor: '#94A3B8',
-      guests: 2,
-      room: 'Regular Room (301)',
-      date: '10 Feb',
-    },
-    {
-      name: 'Kathryn Murphy',
-      status: 'Checked In',
-      statusColor: '#22C55E',
-      guests: 2,
-      room: 'Regular Room (301)',
-      date: '12 Feb',
-    },
-    {
-      name: 'Kathryn Murphy',
-      status: 'Checked In',
-      statusColor: '#22C55E',
-      guests: 2,
-      room: 'Regular Room (301)',
-      date: '12 Feb',
-    },
-    {
-      name: 'Kathryn Murphy',
-      status: 'Checked Out',
-      statusColor: '#3B82F6',
-      guests: 2,
-      room: 'Regular Room (301)',
-      date: '12 Feb',
-    },
   ];
 
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top']}>
-      {/* Header */}
       <View className="items-center py-5">
         <Text className="text-xl font-bold text-[#848F4B]">All Bookings</Text>
       </View>
 
-      {/* Search Bar */}
       <View className="mb-6 px-6">
         <View className="flex-row items-center rounded-3xl bg-white px-5 shadow-sm shadow-slate-100">
           <Search size={22} color="#CBD5E1" />
@@ -178,7 +129,6 @@ const HotelBookings = () => {
         </View>
       </View>
 
-      {/* Booking List Header */}
       <View className="mb-6 flex-row items-center justify-between px-6">
         <Text className="text-lg font-bold text-[#475569]">Booking List</Text>
         <TouchableOpacity
@@ -189,73 +139,24 @@ const HotelBookings = () => {
         </TouchableOpacity>
       </View>
 
-      {isDataEmpty ? (
-        /* Empty State */
-        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-          <View className="items-center px-10 pb-40">
-            <View className="mb-10 items-center justify-center">
-              <Image
-                source={{
-                  uri: 'https://img.freepik.com/free-vector/no-data-concept-illustration_114360-626.jpg',
-                }}
-                className="h-72 w-72"
-                resizeMode="contain"
-              />
-            </View>
-            <Text className="text-center text-2xl font-bold text-[#848F4B]">No Orders Yet</Text>
-            <Text className="mt-4 text-center text-sm leading-6 text-[#94A3B8]">
-              No orders have been received yet. Once users make a order, it will appear here for you
-              to manage.
-            </Text>
-          </View>
-        </ScrollView>
-      ) : (
-        /* Booking List */
-        <View className="flex-1">
-          {/* Filters */}
-          <View className="mb-4 flex-row gap-x-3 px-6">
-            <TouchableOpacity className="flex-row items-center rounded-full bg-white px-6 py-2 shadow-sm shadow-slate-50">
-              <Text className="mr-8 text-xs font-bold text-[#FF8C00]">All</Text>
-              <ChevronDown size={14} color="#FF8C00" />
-            </TouchableOpacity>
-            <TouchableOpacity className="ml-auto flex-row items-center rounded-full bg-white px-6 py-2 shadow-sm shadow-slate-50">
-              <Text className="mr-8 text-xs font-bold text-[#FF8C00]">Date</Text>
-              <ChevronRight size={14} color="#FF8C00" />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-            <View className="px-6 pb-32">
-              {bookings.map((booking, index) => (
-                <BookingCard
-                  key={index}
-                  {...booking}
-                  onPress={() => {
-                    if (booking.status === 'Cancellation requested') {
-                      setShowReviewModal(true);
-                    } else if (booking.status === 'Upcoming') {
-                      setShowReachModal(true);
-                    } else if (booking.status === 'Checked In') {
-                      setShowLeaveModal(true);
-                    }
-                  }}
-                />
-              ))}
-            </View>
-          </ScrollView>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        <View className="px-6 pb-32">
+          {bookings.map((booking, index) => (
+            <BookingCard key={index} {...booking} onPress={() => {}} />
+          ))}
         </View>
-      )}
+      </ScrollView>
 
       {/* Review Request Modal */}
       <Modal visible={showReviewModal} transparent animationType="fade">
         <View className="flex-1 items-center justify-center bg-black/40 px-6">
           <View className="w-full rounded-3xl bg-white p-8">
             <View className="mb-6 flex-row items-center justify-between">
-              <TouchableOpacity onPress={() => setShowReviewModal(false)} p-1>
+              <TouchableOpacity onPress={() => setShowReviewModal(false)} className="p-1">
                 <ArrowLeft size={20} color="#94A3B8" />
               </TouchableOpacity>
               <Text className="text-lg font-bold text-[#1E293B]">Review Request</Text>
-              <TouchableOpacity onPress={() => setShowReviewModal(false)} p-1>
+              <TouchableOpacity onPress={() => setShowReviewModal(false)} className="p-1">
                 <X size={20} color="#CBD5E1" />
               </TouchableOpacity>
             </View>
@@ -285,11 +186,11 @@ const HotelBookings = () => {
         <View className="flex-1 items-center justify-center bg-black/40 px-6">
           <View className="w-full rounded-3xl bg-white p-8">
             <View className="mb-6 flex-row items-center justify-between">
-              <TouchableOpacity onPress={() => setShowCancelModal(false)} p-1>
+              <TouchableOpacity onPress={() => setShowCancelModal(false)} className="p-1">
                 <ArrowLeft size={20} color="#94A3B8" />
               </TouchableOpacity>
               <Text className="text-lg font-bold text-[#1E293B]">Cancellation</Text>
-              <TouchableOpacity onPress={() => setShowCancelModal(false)} p-1>
+              <TouchableOpacity onPress={() => setShowCancelModal(false)} className="p-1">
                 <X size={20} color="#CBD5E1" />
               </TouchableOpacity>
             </View>
@@ -310,62 +211,193 @@ const HotelBookings = () => {
           </View>
         </View>
       </Modal>
+    </SafeAreaView>
+  );
+};
 
-      {/* Reach Modal */}
-      <Modal visible={showReachModal} transparent animationType="fade">
-        <View className="flex-1 items-center justify-center bg-black/40 px-6">
-          <View className="w-full rounded-3xl bg-white p-8">
-            <TouchableOpacity
-              onPress={() => setShowReachModal(false)}
-              className="absolute right-5 top-5 p-1">
-              <X size={20} color="#CBD5E1" />
-            </TouchableOpacity>
-            <Text className="mb-10 mt-8 text-center text-lg font-bold text-[#475569]">
-              Have the person reach the hotel?
+// ─── Bus Management ─────────────────────────────────────────────
+const BusCard = ({ plate, seats, active, image }: any) => (
+  <View className="mb-4 flex-row items-center rounded-2xl border border-[#F1F5F9] bg-white p-4 shadow-sm shadow-slate-100">
+    <View className="h-20 w-24 overflow-hidden rounded-xl bg-gray-100">
+      <Image source={{ uri: image }} className="h-full w-full" />
+    </View>
+    <View className="ml-4 flex-1">
+      <View className="flex-row items-center justify-between">
+        <Text className="text-base font-bold text-[#334155]">{plate}</Text>
+        <TouchableOpacity>
+          <MoreVertical size={20} color="#94A3B8" />
+        </TouchableOpacity>
+      </View>
+      <Text className="mt-1 text-sm text-[#94A3B8]">{seats} Seats</Text>
+      <View className="mt-2 flex-row items-center justify-between">
+        <View className="rounded-full bg-[#F0FDF4] px-3 py-1">
+          <Text className="text-[10px] font-bold uppercase text-[#22C55E]">
+            {active ? 'Active' : 'Inactive'}
+          </Text>
+        </View>
+        <View
+          className={`h-5 w-10 justify-center rounded-full px-1 ${active ? 'bg-[#FF8C00]' : 'bg-[#E2E8F0]'}`}>
+          <View className={`h-3 w-3 rounded-full bg-white ${active ? 'self-end' : 'self-start'}`} />
+        </View>
+      </View>
+    </View>
+  </View>
+);
+
+const TripCard = ({ from, to, seats, date }: any) => (
+  <View className="mb-4 rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-sm shadow-slate-100">
+    <View className="mb-4 flex-row items-center justify-between">
+      <View className="flex-row items-center">
+        <MapPin size={16} color="#64748B" />
+        <Text className="ml-2 text-[15px] font-bold text-[#334155]">{from}</Text>
+        <Text className="mx-2 text-[#94A3B8]">→</Text>
+        <Text className="text-[15px] font-bold text-[#334155]">{to}</Text>
+      </View>
+      <TouchableOpacity>
+        <MoreVertical size={20} color="#94A3B8" />
+      </TouchableOpacity>
+    </View>
+    <View className="flex-row items-center justify-between">
+      <View className="flex-row items-center">
+        <Bus size={16} color="#94A3B8" />
+        <Text className="ml-2 text-xs font-medium text-[#64748B]">{seats} (Available)</Text>
+      </View>
+      <View className="flex-row items-center">
+        <Calendar size={16} color="#94A3B8" />
+        <Text className="ml-2 text-xs font-medium text-[#64748B]">{date}</Text>
+      </View>
+    </View>
+  </View>
+);
+
+const BusManagement = () => {
+  const [activeTab, setActiveTab] = useState<'Buses' | 'Trip' | 'Bookings'>('Buses');
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const buses = [
+    {
+      plate: 'MH-02-AB-1234',
+      seats: 24,
+      active: true,
+      image:
+        'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=200&auto=format&fit=crop',
+    },
+    {
+      plate: 'MH-02-AB-1234',
+      seats: 24,
+      active: true,
+      image:
+        'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=200&auto=format&fit=crop',
+    },
+    {
+      plate: 'MH-02-AB-1234',
+      seats: 24,
+      active: false,
+      image:
+        'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=200&auto=format&fit=crop',
+    },
+  ];
+
+  const trips = [
+    { from: 'Dhaka', to: 'Chittagong', seats: '04', date: '2026-02-15' },
+    { from: 'Dhaka', to: 'Chittagong', seats: '06', date: '2026-02-15' },
+  ];
+
+  return (
+    <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top']}>
+      {/* Header */}
+      <View className="flex-row items-center justify-between px-6 py-4">
+        <TouchableOpacity className="-ml-2 p-2">
+          <ArrowLeft size={24} color="#1E293B" />
+        </TouchableOpacity>
+        <Text className="text-xl font-bold text-[#848F4B]">{activeTab}</Text>
+        <TouchableOpacity className="flex-row items-center rounded-lg border border-[#F1F5F9] bg-white px-3 py-1.5 shadow-sm">
+          <Text className="text-xs font-bold text-[#64748B]">Add New</Text>
+          <Plus size={14} color="#64748B" className="ml-1" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Search Bar */}
+      <View className="mb-6 px-6">
+        <View className="flex-row items-center rounded-full border border-[#F1F5F9] bg-white px-5 shadow-sm shadow-slate-100">
+          <Search size={20} color="#CBD5E1" />
+          <TextInput
+            placeholder={
+              activeTab === 'Buses' ? 'Search buses' : 'Search by route, date, bus number'
+            }
+            placeholderTextColor="#CBD5E1"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            className="ml-3 h-12 flex-1 text-base text-[#334155]"
+          />
+        </View>
+      </View>
+
+      {/* Sub Tabs */}
+      <View className="mb-6 flex-row border-b border-[#F1F5F9] px-6">
+        {(['Buses', 'Trip', 'Bookings'] as const).map((tab) => (
+          <TouchableOpacity
+            key={tab}
+            onPress={() => setActiveTab(tab)}
+            className={`mr-10 pb-3 ${activeTab === tab ? 'border-b-2 border-[#FF8C00]' : ''}`}>
+            <Text
+              className={`text-sm font-bold ${activeTab === tab ? 'text-[#FF8C00]' : 'text-[#94A3B8]'}`}>
+              {tab}
             </Text>
-            <View className="flex-row gap-x-4">
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        {activeTab === 'Buses' &&
+          (isEmpty ? (
+            <View className="items-center px-10 pt-10">
+              <Image
+                source={{
+                  uri: 'https://img.freepik.com/free-vector/no-data-concept-illustration_114360-626.jpg',
+                }}
+                className="h-64 w-64"
+                resizeMode="contain"
+              />
+              <Text className="mt-6 text-center text-xl font-bold text-[#848F4B]">
+                No Bus lists Yet
+              </Text>
+              <Text className="mt-4 text-center text-sm leading-6 text-[#94A3B8]">
+                You haven't added any bus in the list yet. Add bus so passengers can view and book
+                available seats.
+              </Text>
               <TouchableOpacity
-                onPress={() => setShowReachModal(false)}
-                className="flex-1 items-center justify-center rounded-xl border border-[#FF8C00] py-3">
-                <Text className="text-sm font-bold text-[#FF8C00]">No</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setShowReachModal(false)}
-                className="flex-1 items-center justify-center rounded-xl bg-[#FF8C00] py-3">
-                <Text className="text-sm font-bold text-white">Yes</Text>
+                onPress={() => setIsEmpty(false)}
+                className="mt-8 h-14 w-full flex-row items-center justify-center rounded-2xl bg-[#F8F5F2] active:bg-orange-50">
+                <Text className="mr-2 text-[17px] font-bold text-[#334155]">Add Buses</Text>
+                <ArrowRight size={20} color="#334155" />
               </TouchableOpacity>
             </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Leave Modal */}
-      <Modal visible={showLeaveModal} transparent animationType="fade">
-        <View className="flex-1 items-center justify-center bg-black/40 px-6">
-          <View className="w-full rounded-3xl bg-white p-8">
-            <TouchableOpacity
-              onPress={() => setShowLeaveModal(false)}
-              className="absolute right-5 top-5 p-1">
-              <X size={20} color="#CBD5E1" />
-            </TouchableOpacity>
-            <Text className="mb-10 mt-8 text-center text-lg font-bold text-[#475569]">
-              Have the person leave the hotel?
-            </Text>
-            <View className="flex-row gap-x-4">
-              <TouchableOpacity
-                onPress={() => setShowLeaveModal(false)}
-                className="flex-1 items-center justify-center rounded-xl border border-[#FF8C00] py-3">
-                <Text className="text-sm font-bold text-[#FF8C00]">No</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setShowLeaveModal(false)}
-                className="flex-1 items-center justify-center rounded-xl bg-[#FF8C00] py-3">
-                <Text className="text-sm font-bold text-white">Yes</Text>
+          ) : (
+            <View className="px-6 pb-32">
+              {buses.map((bus, idx) => (
+                <BusCard key={idx} {...bus} />
+              ))}
+              <TouchableOpacity onPress={() => setIsEmpty(true)} className="mt-4 items-center">
+                <Text className="text-xs text-slate-300">Show empty state (demo)</Text>
               </TouchableOpacity>
             </View>
+          ))}
+        {activeTab === 'Trip' && (
+          <View className="px-6 pb-32">
+            {trips.map((trip, idx) => (
+              <TripCard key={idx} {...trip} />
+            ))}
           </View>
-        </View>
-      </Modal>
+        )}
+        {activeTab === 'Bookings' && (
+          <View className="items-center px-10 pt-20">
+            <MapPinOff size={48} color="#CBD5E1" />
+            <Text className="mt-4 text-lg font-bold text-[#94A3B8]">No Bookings Yet</Text>
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -388,13 +420,9 @@ export default function OrderManagement() {
   );
   const [searchQuery, setSearchQuery] = useState('');
 
-  if (role === 'hotel') {
-    return <HotelBookings />;
-  }
-
-  if (role === 'restaurant') {
-    return <RestaurantOrders />;
-  }
+  if (role === 'hotel') return <HotelBookings />;
+  if (role === 'restaurant') return <RestaurantOrders />;
+  if (role === 'bus') return <BusManagement />;
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
