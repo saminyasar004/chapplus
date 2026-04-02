@@ -1,9 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import {
-  Search,
-  MapPin,
-  MoreVertical,
   Plus,
   Bus,
   ArrowRight,
@@ -12,6 +9,13 @@ import {
   Calendar,
   ArrowLeft,
   X,
+  ChevronDown,
+  Info,
+  Clock,
+  RotateCcw,
+  Search,
+  MapPin,
+  MoreVertical,
 } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import RestaurantOrders from '../../restaurant/orders';
@@ -19,7 +23,7 @@ import { Image, ScrollView, Text, TextInput, TouchableOpacity, View, Modal } fro
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // ─── Hotel Booking Card ──────────────────────────────────────────
-const BookingCard = ({
+const HotelBookingCard = ({
   name,
   status,
   statusColor,
@@ -136,7 +140,7 @@ const HotelBookings = () => {
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-6 pb-32">
           {bookings.map((booking, index) => (
-            <BookingCard key={index} {...booking} onPress={() => {}} />
+            <HotelBookingCard key={index} {...booking} onPress={() => {}} />
           ))}
         </View>
       </ScrollView>
@@ -331,12 +335,211 @@ const TripCard = ({ service, from, to, seats, date, onEdit, onDelete }: any) => 
     </View>
   );
 };
+const BusBookingCard = ({
+  customer,
+  plate,
+  id,
+  from,
+  to,
+  date,
+  status,
+  onReview,
+  onCancel,
+  onStatusChange,
+}: any) => {
+  const [showOptions, setShowOptions] = useState(false);
+  const [showStatusMenu, setShowStatusMenu] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const getStatusStyle = () => {
+    switch (status) {
+      case 'Confirmed':
+        return { bg: 'bg-[#F0FDF4]', text: 'text-[#22C55E]', label: 'Confirmed' };
+      case 'Cancellation Request':
+        return { bg: 'bg-[#FFF7ED]', text: 'text-[#FF8C00]', label: 'Cancellation Request' };
+      case 'Cancelled':
+        return { bg: 'bg-[#FEF2F2]', text: 'text-[#EF4444]', label: 'Cancelled' };
+      case 'Cancellation Request sent':
+        return { bg: 'bg-[#FFF7ED]', text: 'text-[#FF8C00]', label: 'Cancellation Request sent' };
+      default:
+        return { bg: 'bg-[#F1F5F9]', text: 'text-[#64748B]', label: status };
+    }
+  };
+
+  const style = getStatusStyle();
+
+  return (
+    <View className="mb-4 rounded-2xl border border-[#F1F5F9] bg-white p-4 shadow-sm shadow-slate-100">
+      <View className="flex-row items-center justify-between">
+        <View className="flex-row items-center">
+          <Text className="text-[17px] font-bold text-[#334155]">{customer}</Text>
+          <View className="relative">
+            <TouchableOpacity
+              onPress={() => setShowStatusMenu(!showStatusMenu)}
+              className={`ml-3 rounded-lg px-2 py-1 ${style.bg}`}>
+              <Text className={`text-[10px] font-bold ${style.text}`}>{style.label}</Text>
+            </TouchableOpacity>
+            {showStatusMenu && (
+              <View
+                className="absolute left-3 top-8 z-50 w-40 rounded-2xl border border-slate-50 bg-white p-2 shadow-xl shadow-slate-200"
+                style={{ elevation: 5 }}>
+                <View className="absolute -top-2 left-4 h-4 w-4 rotate-45 border-l border-t border-slate-50 bg-white" />
+                {['Confirmed', 'Cancelled', 'Cancel requested', 'request cancelation'].map((s) => (
+                  <TouchableOpacity
+                    key={s}
+                    onPress={() => {
+                      setShowStatusMenu(false);
+                      onStatusChange(s);
+                    }}
+                    className="p-3">
+                    <Text className="text-sm font-medium text-[#94A3B8]">{s}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+          </View>
+        </View>
+        <View className="relative">
+          <TouchableOpacity onPress={() => setShowOptions(!showOptions)}>
+            <MoreHorizontal size={20} color="#94A3B8" />
+          </TouchableOpacity>
+          {showOptions && (
+            <View
+              className="absolute right-0 top-8 z-50 w-48 rounded-2xl border border-slate-50 bg-white p-2 shadow-xl shadow-slate-200"
+              style={{ elevation: 5 }}>
+              <View className="absolute -top-2 right-2 h-4 w-4 rotate-45 border-l border-t border-slate-50 bg-white" />
+              <TouchableOpacity onPress={() => setShowOptions(false)} className="p-3">
+                <Text className="text-sm font-medium text-[#94A3B8]">Withdraw cancelation</Text>
+              </TouchableOpacity>
+              <View className="mx-2 h-[1px] bg-[#F1F5F9]" />
+              <TouchableOpacity
+                onPress={() => {
+                  setShowOptions(false);
+                  onCancel();
+                }}
+                className="p-3">
+                <Text className="text-sm font-medium text-[#94A3B8]">Cancel Booking</Text>
+              </TouchableOpacity>
+              <View className="mx-2 h-[1px] bg-[#F1F5F9]" />
+              <TouchableOpacity onPress={() => setShowOptions(false)} className="p-3">
+                <Text className="text-sm font-medium text-[#94A3B8]">Edit</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      </View>
+
+      <View className="mt-2">
+        <Text className="text-sm text-[#94A3B8]">{plate}</Text>
+        <Text className="text-sm text-[#94A3B8]">{id}</Text>
+      </View>
+
+      <View className="mt-4 flex-row items-center">
+        <MapPin size={14} color="#94A3B8" />
+        <Text className="ml-2 text-sm text-[#94A3B8]">
+          {from} - {to}
+        </Text>
+      </View>
+
+      <View className="mt-3 flex-row items-center justify-between">
+        <View className="flex-row items-center">
+          <Calendar size={14} color="#94A3B8" />
+          <Text className="ml-2 text-sm text-[#94A3B8]">{date}</Text>
+        </View>
+
+        <View className="flex-row items-center">
+          {status === 'Cancellation Request' && (
+            <TouchableOpacity onPress={onReview} className="mr-4">
+              <Text className="text-sm font-bold text-[#FF8C00] underline">Review</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            onPress={() => setIsExpanded(!isExpanded)}
+            className="flex-row items-center">
+            <Text className="text-sm font-bold text-[#FF8C00]">Booked</Text>
+            <ChevronDown
+              size={14}
+              color="#FF8C00"
+              className={`ml-1 ${isExpanded ? 'rotate-180' : ''}`}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {isExpanded && (
+        <View className="mt-4 border-t border-[#F1F5F9] pt-4">
+          <View className="flex-row items-center justify-between">
+            <Text className="text-sm text-[#94A3B8]">A1, B1, C1, A2, B2</Text>
+            <Text className="text-sm text-[#94A3B8]">10 seat</Text>
+          </View>
+        </View>
+      )}
+    </View>
+  );
+};
 
 const BusManagement = () => {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'Buses' | 'Trip' | 'Bookings'>('Buses');
+  const [activeTab, setActiveTab] = useState<'Buses' | 'Trip' | 'Bookings'>('Bookings');
   const [isEmpty, setIsEmpty] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showCancelConfirmModal, setShowCancelConfirmModal] = useState(false);
+  const [showCancelReasonModal, setShowCancelReasonModal] = useState(false);
+
+  const [activeFilters, setActiveFilters] = useState([
+    { id: '1', label: 'CD-02-AB-1234' },
+    { id: '2', label: 'Dhaka to chittagong' },
+    { id: '3', label: 'Confirmed' },
+  ]);
+
+  const bookings = [
+    {
+      customer: 'Mike Eriksen',
+      status: 'Confirmed',
+      plate: 'CD-02-AB-1234',
+      id: '#1234',
+      from: 'Dhaka',
+      to: 'Chittagong',
+      date: '2026-02-15',
+    },
+    {
+      customer: 'Mike Eriksen',
+      status: 'Cancellation Request',
+      plate: 'CD-02-AB-1234',
+      id: '#1234',
+      from: 'Dhaka',
+      to: 'Chittagong',
+      date: '2026-02-15',
+    },
+    {
+      customer: 'Mike Eriksen',
+      status: 'Cancelled',
+      plate: 'CD-02-AB-1234',
+      id: '#1234',
+      from: 'Dhaka',
+      to: 'Chittagong',
+      date: '2026-02-15',
+    },
+    {
+      customer: 'Mike Eriksen',
+      status: 'Confirmed',
+      plate: 'CD-02-AB-1234',
+      id: '#1234',
+      from: 'Dhaka',
+      to: 'Chittagong',
+      date: '2026-02-15',
+    },
+    {
+      customer: 'Mike Eriksen',
+      status: 'Cancellation Request sent',
+      plate: 'CD-02-AB-1234',
+      id: '#1234',
+      from: 'Dhaka',
+      to: 'Chittagong',
+      date: '2026-02-15',
+    },
+  ];
 
   const buses = [
     {
@@ -402,7 +605,10 @@ const BusManagement = () => {
         </TouchableOpacity>
         <Text className="text-xl font-bold text-[#848F4B]">{activeTab}</Text>
         <TouchableOpacity
-          onPress={() => router.push('/bus/add-new')}
+          onPress={() => {
+            if (activeTab === 'Bookings') router.push('/bus/create-booking');
+            else router.push('/bus/add-new');
+          }}
           className="flex-row items-center rounded-lg border border-[#F1F5F9] bg-white px-3 py-1.5 shadow-sm">
           <Text className="text-xs font-bold text-[#64748B]">Add New</Text>
           <Plus size={14} color="#64748B" className="ml-1" />
@@ -521,11 +727,168 @@ const BusManagement = () => {
           </View>
         )}
         {activeTab === 'Bookings' && (
-          <View className="items-center px-10 pt-20">
-            <MapPinOff size={48} color="#CBD5E1" />
-            <Text className="mt-4 text-lg font-bold text-[#94A3B8]">No Bookings Yet</Text>
+          <View className="px-6 pb-32">
+            {bookings.length === 0 ? (
+              <View className="flex-1 items-center justify-center px-4 pt-10">
+                <Image
+                  source={{
+                    uri: 'https://img.freepik.com/free-vector/no-data-concept-illustration_114360-536.jpg',
+                  }}
+                  className="mb-6 h-64 w-64"
+                  resizeMode="contain"
+                />
+                <Text className="mb-4 text-center text-2xl font-bold text-[#848F4B]">
+                  No Bookings Yet
+                </Text>
+                <Text className="mb-8 text-center text-[15px] leading-5 text-[#94A3B8]">
+                  No seat bookings have been received yet. Once users make a booking, it will appear
+                  here for you to manage.
+                </Text>
+              </View>
+            ) : (
+              <>
+                <View className="mb-2 flex-row flex-wrap">
+                  {activeFilters.map((filter) => (
+                    <View
+                      key={filter.id}
+                      className="mb-2 mr-2 flex-row items-center rounded-full bg-[#F1F5F9] px-4 py-1.5">
+                      <Text className="text-xs text-[#475569]">{filter.label}</Text>
+                      <TouchableOpacity
+                        onPress={() =>
+                          setActiveFilters((prev) => prev.filter((f) => f.id !== filter.id))
+                        }
+                        className="ml-2">
+                        <X size={12} color="#475569" />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </View>
+
+                <View className="mb-6 flex-row space-x-2">
+                  <TouchableOpacity className="flex-row items-center rounded-xl border border-[#F1F5F9] bg-[#F8FAFC] px-4 py-2">
+                    <Text className="text-xs font-bold text-[#475569]">Bus wise</Text>
+                    <ChevronDown size={14} color="#475569" className="ml-1" />
+                  </TouchableOpacity>
+                  <TouchableOpacity className="flex-row items-center rounded-xl border border-[#F1F5F9] bg-[#F8FAFC] px-4 py-2">
+                    <Text className="text-xs font-bold text-[#475569]">Trip wise</Text>
+                    <ChevronDown size={14} color="#475569" className="ml-1" />
+                  </TouchableOpacity>
+                  <TouchableOpacity className="flex-row items-center rounded-xl border border-[#F1F5F9] bg-[#F8FAFC] px-4 py-2">
+                    <Text className="text-xs font-bold text-[#475569]">status</Text>
+                    <ChevronDown size={14} color="#475569" className="ml-1" />
+                  </TouchableOpacity>
+                </View>
+                {bookings.map((booking, idx) => (
+                  <BusBookingCard
+                    key={idx}
+                    {...booking}
+                    onReview={() => setShowReviewModal(true)}
+                    onCancel={() => setShowCancelConfirmModal(true)}
+                    onStatusChange={(s: string) => {
+                      if (s === 'request cancelation') setShowCancelReasonModal(true);
+                    }}
+                  />
+                ))}
+              </>
+            )}
           </View>
         )}
+
+        <Modal visible={showReviewModal} transparent animationType="fade">
+          <View className="flex-1 items-center justify-center bg-black/40 px-6">
+            <View className="w-full rounded-3xl bg-white p-8">
+              <View className="mb-6 flex-row items-center justify-between">
+                <TouchableOpacity onPress={() => setShowReviewModal(false)} className="p-1">
+                  <ArrowLeft size={20} color="#94A3B8" />
+                </TouchableOpacity>
+                <Text className="text-lg font-bold text-[#1E293B]">Review Request</Text>
+                <TouchableOpacity onPress={() => setShowReviewModal(false)} className="p-1">
+                  <X size={20} color="#CBD5E1" />
+                </TouchableOpacity>
+              </View>
+              <Text className="mb-8 text-sm leading-6 text-[#94A3B8]">
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has
+                been the industry's standard dummy text ever since the 1500s, when an unknown
+                printer took a galley
+              </Text>
+              <View className="flex-row gap-x-4">
+                <TouchableOpacity
+                  onPress={() => setShowReviewModal(false)}
+                  className="flex-1 items-center justify-center rounded-xl border border-[#FF8C00] py-3">
+                  <Text className="text-sm font-bold text-[#FF8C00]">Reject</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setShowReviewModal(false)}
+                  className="flex-1 items-center justify-center rounded-xl bg-[#FF8C00] py-3">
+                  <Text className="text-sm font-bold text-white">Accept</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Cancellation Confirmation Modal (Bus) */}
+        <Modal visible={showCancelConfirmModal} transparent animationType="fade">
+          <View className="flex-1 items-center justify-center bg-black/40 px-6">
+            <View className="w-full rounded-3xl bg-white p-8">
+              <TouchableOpacity
+                onPress={() => setShowCancelConfirmModal(false)}
+                className="absolute right-6 top-6 p-1">
+                <X size={20} color="#CBD5E1" />
+              </TouchableOpacity>
+              <Text className="mb-8 mt-4 text-center text-lg font-bold text-[#1E293B]">
+                Are you sure to about cancelling the booking?
+              </Text>
+              <View className="flex-row gap-x-4">
+                <TouchableOpacity
+                  onPress={() => setShowCancelConfirmModal(false)}
+                  className="flex-1 items-center justify-center rounded-xl border border-[#F1F5F9] py-3">
+                  <Text className="text-sm font-bold text-[#94A3B8]">No</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setShowCancelConfirmModal(false)}
+                  className="flex-1 items-center justify-center rounded-xl bg-[#FF8C00] py-4">
+                  <Text className="text-sm font-bold text-white">Yes</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Cancellation Reason Modal (Bus) */}
+        <Modal visible={showCancelReasonModal} transparent animationType="fade">
+          <View className="flex-1 items-center justify-center bg-black/40 px-6">
+            <View className="w-full rounded-3xl bg-white p-8">
+              <View className="mb-8 flex-row items-center justify-between">
+                <TouchableOpacity onPress={() => setShowCancelReasonModal(false)} className="p-1">
+                  <ArrowLeft size={20} color="#94A3B8" />
+                </TouchableOpacity>
+                <Text className="text-lg font-bold text-[#475569]">Cancellation</Text>
+                <TouchableOpacity onPress={() => setShowCancelReasonModal(false)} className="p-1">
+                  <X size={20} color="#CBD5E1" />
+                </TouchableOpacity>
+              </View>
+
+              <View className="mb-6">
+                <Text className="mb-2 text-sm font-bold text-[#1E293B]">Reason</Text>
+                <TextInput
+                  placeholder="Enter here"
+                  placeholderTextColor="#CBD5E1"
+                  multiline
+                  className="min-h-[120px] rounded-2xl border border-[#F1F5F9] bg-white p-4 text-base text-[#334155] shadow-sm shadow-slate-50"
+                  style={{ textAlignVertical: 'top' }}
+                />
+                <Text className="mt-2 text-xs text-[#94A3B8]">Tell reason in details.</Text>
+              </View>
+
+              <TouchableOpacity
+                onPress={() => setShowCancelReasonModal(false)}
+                className="h-14 items-center justify-center rounded-2xl bg-[#FF8C00] shadow-lg shadow-orange-500/30">
+                <Text className="text-[17px] font-bold text-white">Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );
