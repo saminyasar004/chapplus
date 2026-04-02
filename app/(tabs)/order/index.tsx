@@ -4,18 +4,14 @@ import {
   Search,
   MapPin,
   MoreVertical,
-  TrendingUp,
-  X,
-  ArrowLeft,
-  Calendar,
-  Users,
-  ChevronDown,
-  ChevronRight,
   Plus,
   Bus,
   ArrowRight,
   MapPinOff,
   MoreHorizontal,
+  Calendar,
+  ArrowLeft,
+  X,
 } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import RestaurantOrders from '../../restaurant/orders';
@@ -62,7 +58,7 @@ const BookingCard = ({
 
     <View className="mt-4 flex-row items-start">
       <View className="mr-3 mt-1">
-        <Users size={16} color="#94A3B8" />
+        <View />
       </View>
       <View className="flex-1">
         <Text className="text-sm font-medium text-[#64748B]">{guests} Guests</Text>
@@ -84,13 +80,10 @@ const BookingCard = ({
 // ─── Hotel Booking List ──────────────────────────────────────────
 const HotelBookings = () => {
   const router = useRouter();
-  const [isDataEmpty, setIsDataEmpty] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [showReachModal, setShowReachModal] = useState(false);
-  const [showLeaveModal, setShowLeaveModal] = useState(false);
 
   const bookings = [
     {
@@ -280,31 +273,64 @@ const BusCard = ({ plate, seats, active, image, onEdit, onDelete }: any) => {
   );
 };
 
-const TripCard = ({ from, to, seats, date }: any) => (
-  <View className="mb-4 rounded-2xl border border-[#F1F5F9] bg-white p-5 shadow-sm shadow-slate-100">
-    <View className="mb-4 flex-row items-center justify-between">
-      <View className="flex-row items-center">
-        <MapPin size={16} color="#64748B" />
-        <Text className="ml-2 text-[15px] font-bold text-[#334155]">{from}</Text>
-        <Text className="mx-2 text-[#94A3B8]">→</Text>
-        <Text className="text-[15px] font-bold text-[#334155]">{to}</Text>
+const TripCard = ({ service, from, to, seats, date, onEdit, onDelete }: any) => {
+  const [showOptions, setShowOptions] = useState(false);
+
+  return (
+    <View className="mb-4 rounded-2xl border border-[#F1F5F9] bg-white p-4 shadow-sm shadow-slate-100">
+      <View className="flex-row">
+        <View className="h-20 w-24 overflow-hidden rounded-xl bg-gray-100">
+          <Image
+            source={{ uri: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400' }}
+            className="h-full w-full"
+          />
+        </View>
+        <View className="ml-4 flex-1">
+          <View className="flex-row items-center justify-between">
+            <Text className="text-[17px] font-bold text-[#334155]">{service}</Text>
+            <View className="relative">
+              <TouchableOpacity onPress={() => setShowOptions(!showOptions)}>
+                <MoreHorizontal size={20} color="#94A3B8" />
+              </TouchableOpacity>
+              {showOptions && (
+                <View
+                  className="absolute right-0 top-8 z-50 w-32 rounded-2xl border border-slate-50 bg-white p-2 shadow-xl shadow-slate-200"
+                  style={{ elevation: 5 }}>
+                  <View className="absolute -top-2 right-2 h-4 w-4 rotate-45 border-l border-t border-slate-50 bg-white" />
+                  <TouchableOpacity onPress={() => setShowOptions(false)} className="p-3">
+                    <Text className="text-sm font-medium text-[#94A3B8]">Delete</Text>
+                  </TouchableOpacity>
+                  <View className="mx-2 h-[1px] bg-[#F1F5F9]" />
+                  <TouchableOpacity onPress={() => setShowOptions(false)} className="p-3">
+                    <Text className="text-sm font-medium text-[#94A3B8]">Edit</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </View>
+
+          <View className="mt-2 flex-row items-center">
+            <MapPin size={14} color="#94A3B8" />
+            <Text className="ml-1 text-sm text-[#94A3B8]">{from}</Text>
+            <ArrowRight size={14} color="#94A3B8" className="mx-2" />
+            <Text className="text-sm text-[#94A3B8]">{to}</Text>
+          </View>
+
+          <View className="mt-3 flex-row items-center justify-between">
+            <View className="flex-row items-center">
+              <Bus size={14} color="#94A3B8" />
+              <Text className="ml-1 text-sm text-[#94A3B8]">{seats} (Available)</Text>
+            </View>
+            <View className="flex-row items-center">
+              <Calendar size={14} color="#94A3B8" />
+              <Text className="ml-1 text-sm text-[#94A3B8]">{date}</Text>
+            </View>
+          </View>
+        </View>
       </View>
-      <TouchableOpacity>
-        <MoreVertical size={20} color="#94A3B8" />
-      </TouchableOpacity>
     </View>
-    <View className="flex-row items-center justify-between">
-      <View className="flex-row items-center">
-        <Bus size={16} color="#94A3B8" />
-        <Text className="ml-2 text-xs font-medium text-[#64748B]">{seats} (Available)</Text>
-      </View>
-      <View className="flex-row items-center">
-        <Calendar size={16} color="#94A3B8" />
-        <Text className="ml-2 text-xs font-medium text-[#64748B]">{date}</Text>
-      </View>
-    </View>
-  </View>
-);
+  );
+};
 
 const BusManagement = () => {
   const router = useRouter();
@@ -337,8 +363,34 @@ const BusManagement = () => {
   ];
 
   const trips = [
-    { from: 'Dhaka', to: 'Chittagong', seats: '04', date: '2026-02-15' },
-    { from: 'Dhaka', to: 'Chittagong', seats: '06', date: '2026-02-15' },
+    {
+      service: 'Nirala Bus Service',
+      from: 'Dhaka',
+      to: 'Chittagong',
+      seats: '04',
+      date: '2026-02-15',
+    },
+    {
+      service: 'Nirala Bus Service',
+      from: 'Dhaka',
+      to: 'Chittagong',
+      seats: '04',
+      date: '2026-02-15',
+    },
+    {
+      service: 'Nirala Bus Service',
+      from: 'Dhaka',
+      to: 'Chittagong',
+      seats: '04',
+      date: '2026-02-15',
+    },
+    {
+      service: 'Nirala Bus Service',
+      from: 'Dhaka',
+      to: 'Chittagong',
+      seats: '04',
+      date: '2026-02-15',
+    },
   ];
 
   return (
@@ -430,9 +482,42 @@ const BusManagement = () => {
           ))}
         {activeTab === 'Trip' && (
           <View className="px-6 pb-32">
-            {trips.map((trip, idx) => (
-              <TripCard key={idx} {...trip} />
-            ))}
+            {trips.length === 0 ? (
+              <View className="flex-1 items-center justify-center px-4 pt-10">
+                <Image
+                  source={{
+                    uri: 'https://img.freepik.com/free-vector/empty-concept-illustration_114360-1253.jpg',
+                  }}
+                  className="mb-6 h-64 w-64"
+                  resizeMode="contain"
+                />
+                <Text className="mb-4 text-center text-2xl font-bold text-[#848F4B]">
+                  No Bus trips Yet
+                </Text>
+                <Text className="mb-8 text-center text-[15px] leading-5 text-[#94A3B8]">
+                  You haven't added any trip in the list yet. Add trips so passengers can view and
+                  book available seats.
+                </Text>
+                <TouchableOpacity
+                  onPress={() => router.push('/bus/add-trip')}
+                  className="flex-row items-center rounded-2xl bg-[#F8F8F8] px-10 py-4">
+                  <Text className="text-[17px] font-bold text-[#334155]">Add Trips</Text>
+                  <ArrowRight size={20} color="#334155" className="ml-2" />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <>
+                <View className="mb-4 flex-row items-center self-start rounded-full bg-[#F1F5F9] px-4 py-2">
+                  <Text className="text-sm font-medium text-[#475569]">All Trips</Text>
+                  <ArrowRight size={14} color="#475569" className="ml-1 rotate-90" />
+                </View>
+                {trips.map((trip, idx) => (
+                  <TouchableOpacity key={idx} onPress={() => router.push('/bus/trip-details')}>
+                    <TripCard {...trip} />
+                  </TouchableOpacity>
+                ))}
+              </>
+            )}
           </View>
         )}
         {activeTab === 'Bookings' && (
