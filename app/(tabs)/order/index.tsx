@@ -7,7 +7,11 @@ import {
   TrendingUp,
   X,
   ArrowLeft,
-  ChevronLeft,
+  Calendar,
+  Users,
+  ChevronDown,
+  ChevronRight,
+  Plus,
 } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import RestaurantOrders from '../../restaurant/orders';
@@ -20,14 +24,354 @@ import {
   View,
   Modal,
   Pressable,
-  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const { width } = Dimensions.get('window');
+// ─── Hotel Booking Card ──────────────────────────────────────────
+const BookingCard = ({
+  name,
+  status,
+  statusColor,
+  guests,
+  room,
+  date,
+  onPress,
+}: {
+  name: string;
+  status: string;
+  statusColor: string;
+  guests: number;
+  room: string;
+  date: string;
+  onPress: () => void;
+}) => (
+  <TouchableOpacity
+    activeOpacity={0.9}
+    className="mb-4 rounded-2xl border border-[#F1F5F9] bg-white px-5 py-5 shadow-sm shadow-slate-100"
+    onPress={onPress}>
+    <View className="flex-row items-center justify-between">
+      <View className="flex-row items-center">
+        <Text className="text-lg font-bold text-[#1E293B]">{name}</Text>
+        <View
+          className="ml-3 rounded-full px-3 py-1"
+          style={{ backgroundColor: statusColor + '15' }}>
+          <Text className="text-[10px] font-bold" style={{ color: statusColor }}>
+            {status}
+          </Text>
+        </View>
+      </View>
+      <TouchableOpacity className="p-1">
+        <MoreVertical size={20} color="#94A3B8" />
+      </TouchableOpacity>
+    </View>
 
-export default function OrderManagement() {
+    <View className="mt-4 flex-row items-start">
+      <View className="mr-3 mt-1">
+        <Users size={16} color="#94A3B8" />
+      </View>
+      <View className="flex-1">
+        <Text className="text-sm font-medium text-[#64748B]">{guests} Guests</Text>
+        <View className="mt-1 flex-row items-center">
+          <MapPin size={14} color="#94A3B8" />
+          <Text className="ml-1 text-xs text-[#94A3B8]">{room}</Text>
+        </View>
+      </View>
+      <View className="items-end">
+        <View className="flex-row items-center">
+          <Text className="text-xs font-medium text-[#64748B]">{date}</Text>
+          <Calendar size={14} color="#94A3B8" className="ml-2" />
+        </View>
+      </View>
+    </View>
+  </TouchableOpacity>
+);
+
+// ─── Hotel Booking List ──────────────────────────────────────────
+const HotelBookings = () => {
   const router = useRouter();
+  const [isDataEmpty, setIsDataEmpty] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Dialog states
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showReachModal, setShowReachModal] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+
+  const bookings = [
+    {
+      name: 'Sarah Jonson',
+      status: 'Upcoming',
+      statusColor: '#22C55E',
+      guests: 2,
+      room: 'Regular Room (301)',
+      date: '12 Feb-18 Feb',
+    },
+    {
+      name: 'Devon Lane',
+      status: 'Cancellation requested',
+      statusColor: '#EF4444',
+      guests: 2,
+      room: 'Regular Room (301)',
+      date: '10 Feb',
+    },
+    {
+      name: 'Sarah Jonson',
+      status: 'Cancellation requested',
+      statusColor: '#EF4444',
+      guests: 2,
+      room: 'Regular Room (301)',
+      date: '12 Feb-18 Feb',
+    },
+    {
+      name: 'Devon Lane',
+      status: 'Cancelled',
+      statusColor: '#94A3B8',
+      guests: 2,
+      room: 'Regular Room (301)',
+      date: '10 Feb',
+    },
+    {
+      name: 'Kathryn Murphy',
+      status: 'Checked In',
+      statusColor: '#22C55E',
+      guests: 2,
+      room: 'Regular Room (301)',
+      date: '12 Feb',
+    },
+    {
+      name: 'Kathryn Murphy',
+      status: 'Checked In',
+      statusColor: '#22C55E',
+      guests: 2,
+      room: 'Regular Room (301)',
+      date: '12 Feb',
+    },
+    {
+      name: 'Kathryn Murphy',
+      status: 'Checked Out',
+      statusColor: '#3B82F6',
+      guests: 2,
+      room: 'Regular Room (301)',
+      date: '12 Feb',
+    },
+  ];
+
+  return (
+    <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top']}>
+      {/* Header */}
+      <View className="items-center py-5">
+        <Text className="text-xl font-bold text-[#848F4B]">All Bookings</Text>
+      </View>
+
+      {/* Search Bar */}
+      <View className="mb-6 px-6">
+        <View className="flex-row items-center rounded-3xl bg-white px-5 shadow-sm shadow-slate-100">
+          <Search size={22} color="#CBD5E1" />
+          <TextInput
+            placeholder="Search by name"
+            placeholderTextColor="#CBD5E1"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            className="ml-3 h-14 flex-1 text-base text-[#334155]"
+          />
+        </View>
+      </View>
+
+      {/* Booking List Header */}
+      <View className="mb-6 flex-row items-center justify-between px-6">
+        <Text className="text-lg font-bold text-[#475569]">Booking List</Text>
+        <TouchableOpacity
+          onPress={() => router.push('/hotel/create-booking')}
+          className="flex-row items-center rounded-lg bg-[#FF8C00] px-4 py-2 shadow-lg shadow-orange-500/20">
+          <Plus size={16} color="white" strokeWidth={3} />
+          <Text className="ml-1 text-sm font-bold text-white">Create Booking</Text>
+        </TouchableOpacity>
+      </View>
+
+      {isDataEmpty ? (
+        /* Empty State */
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+          <View className="items-center px-10 pb-40">
+            <View className="mb-10 items-center justify-center">
+              <Image
+                source={{
+                  uri: 'https://img.freepik.com/free-vector/no-data-concept-illustration_114360-626.jpg',
+                }}
+                className="h-72 w-72"
+                resizeMode="contain"
+              />
+            </View>
+            <Text className="text-center text-2xl font-bold text-[#848F4B]">No Orders Yet</Text>
+            <Text className="mt-4 text-center text-sm leading-6 text-[#94A3B8]">
+              No orders have been received yet. Once users make a order, it will appear here for you
+              to manage.
+            </Text>
+          </View>
+        </ScrollView>
+      ) : (
+        /* Booking List */
+        <View className="flex-1">
+          {/* Filters */}
+          <View className="mb-4 flex-row gap-x-3 px-6">
+            <TouchableOpacity className="flex-row items-center rounded-full bg-white px-6 py-2 shadow-sm shadow-slate-50">
+              <Text className="mr-8 text-xs font-bold text-[#FF8C00]">All</Text>
+              <ChevronDown size={14} color="#FF8C00" />
+            </TouchableOpacity>
+            <TouchableOpacity className="ml-auto flex-row items-center rounded-full bg-white px-6 py-2 shadow-sm shadow-slate-50">
+              <Text className="mr-8 text-xs font-bold text-[#FF8C00]">Date</Text>
+              <ChevronRight size={14} color="#FF8C00" />
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+            <View className="px-6 pb-32">
+              {bookings.map((booking, index) => (
+                <BookingCard
+                  key={index}
+                  {...booking}
+                  onPress={() => {
+                    if (booking.status === 'Cancellation requested') {
+                      setShowReviewModal(true);
+                    } else if (booking.status === 'Upcoming') {
+                      setShowReachModal(true);
+                    } else if (booking.status === 'Checked In') {
+                      setShowLeaveModal(true);
+                    }
+                  }}
+                />
+              ))}
+            </View>
+          </ScrollView>
+        </View>
+      )}
+
+      {/* Review Request Modal */}
+      <Modal visible={showReviewModal} transparent animationType="fade">
+        <View className="flex-1 items-center justify-center bg-black/40 px-6">
+          <View className="w-full rounded-3xl bg-white p-8">
+            <View className="mb-6 flex-row items-center justify-between">
+              <TouchableOpacity onPress={() => setShowReviewModal(false)} p-1>
+                <ArrowLeft size={20} color="#94A3B8" />
+              </TouchableOpacity>
+              <Text className="text-lg font-bold text-[#1E293B]">Review Request</Text>
+              <TouchableOpacity onPress={() => setShowReviewModal(false)} p-1>
+                <X size={20} color="#CBD5E1" />
+              </TouchableOpacity>
+            </View>
+            <Text className="mb-8 text-sm leading-6 text-[#94A3B8]">
+              Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has been
+              the industry's standard dummy text ever since the 1500s, when an unknown printer took
+              a galley
+            </Text>
+            <View className="flex-row gap-x-4">
+              <TouchableOpacity
+                onPress={() => setShowReviewModal(false)}
+                className="flex-1 items-center justify-center rounded-xl border border-[#FF8C00] py-3">
+                <Text className="text-sm font-bold text-[#FF8C00]">Reject</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setShowReviewModal(false)}
+                className="flex-1 items-center justify-center rounded-xl bg-[#FF8C00] py-3">
+                <Text className="text-sm font-bold text-white">Accept</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Cancellation Modal */}
+      <Modal visible={showCancelModal} transparent animationType="fade">
+        <View className="flex-1 items-center justify-center bg-black/40 px-6">
+          <View className="w-full rounded-3xl bg-white p-8">
+            <View className="mb-6 flex-row items-center justify-between">
+              <TouchableOpacity onPress={() => setShowCancelModal(false)} p-1>
+                <ArrowLeft size={20} color="#94A3B8" />
+              </TouchableOpacity>
+              <Text className="text-lg font-bold text-[#1E293B]">Cancellation</Text>
+              <TouchableOpacity onPress={() => setShowCancelModal(false)} p-1>
+                <X size={20} color="#CBD5E1" />
+              </TouchableOpacity>
+            </View>
+            <Text className="mb-2 text-sm font-bold text-[#1E293B]">Reason</Text>
+            <TextInput
+              placeholder="Enter here"
+              placeholderTextColor="#CBD5E1"
+              multiline
+              className="mb-1 h-32 rounded-2xl border border-[#F1F5F9] bg-[#FAFAFA] p-4 text-sm text-[#334155]"
+              textAlignVertical="top"
+            />
+            <Text className="mb-8 text-[11px] text-[#94A3B8]">Tell reason in details.</Text>
+            <TouchableOpacity
+              onPress={() => setShowCancelModal(false)}
+              className="h-14 items-center justify-center rounded-2xl bg-[#FF8C00] shadow-lg shadow-orange-500/20">
+              <Text className="text-[17px] font-bold text-white">Submit</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Reach Modal */}
+      <Modal visible={showReachModal} transparent animationType="fade">
+        <View className="flex-1 items-center justify-center bg-black/40 px-6">
+          <View className="w-full rounded-3xl bg-white p-8">
+            <TouchableOpacity
+              onPress={() => setShowReachModal(false)}
+              className="absolute right-5 top-5 p-1">
+              <X size={20} color="#CBD5E1" />
+            </TouchableOpacity>
+            <Text className="mb-10 mt-8 text-center text-lg font-bold text-[#475569]">
+              Have the person reach the hotel?
+            </Text>
+            <View className="flex-row gap-x-4">
+              <TouchableOpacity
+                onPress={() => setShowReachModal(false)}
+                className="flex-1 items-center justify-center rounded-xl border border-[#FF8C00] py-3">
+                <Text className="text-sm font-bold text-[#FF8C00]">No</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setShowReachModal(false)}
+                className="flex-1 items-center justify-center rounded-xl bg-[#FF8C00] py-3">
+                <Text className="text-sm font-bold text-white">Yes</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Leave Modal */}
+      <Modal visible={showLeaveModal} transparent animationType="fade">
+        <View className="flex-1 items-center justify-center bg-black/40 px-6">
+          <View className="w-full rounded-3xl bg-white p-8">
+            <TouchableOpacity
+              onPress={() => setShowLeaveModal(false)}
+              className="absolute right-5 top-5 p-1">
+              <X size={20} color="#CBD5E1" />
+            </TouchableOpacity>
+            <Text className="mb-10 mt-8 text-center text-lg font-bold text-[#475569]">
+              Have the person leave the hotel?
+            </Text>
+            <View className="flex-row gap-x-4">
+              <TouchableOpacity
+                onPress={() => setShowLeaveModal(false)}
+                className="flex-1 items-center justify-center rounded-xl border border-[#FF8C00] py-3">
+                <Text className="text-sm font-bold text-[#FF8C00]">No</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setShowLeaveModal(false)}
+                className="flex-1 items-center justify-center rounded-xl bg-[#FF8C00] py-3">
+                <Text className="text-sm font-bold text-white">Yes</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
+  );
+};
+
+// ─── Main Order Management ─────────────────────────────────────
+export default function OrderManagement() {
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
@@ -44,191 +388,9 @@ export default function OrderManagement() {
   );
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Modal states
-  const [showHandoffModal, setShowHandoffModal] = useState(false);
-  const [showCancellationModal, setShowCancellationModal] = useState(false);
-  const [showReturningModal, setShowReturningModal] = useState(false);
-  const [showMenu, setShowMenu] = useState<number | null>(null);
-
-  const activeOrders = [
-    {
-      id: 1,
-      title: 'Gradient Graphic T-shirt',
-      size: 'Medium',
-      color: 'White',
-      otp: '664564',
-      distance: '28km',
-      time: '10Min',
-      price: 145,
-    },
-    {
-      id: 2,
-      title: 'Gradient Graphic T-shirt',
-      size: 'Medium',
-      color: 'White',
-      otp: '664564',
-      distance: '28km',
-      time: '10Min',
-      price: 145,
-    },
-    {
-      id: 3,
-      title: 'Gradient Graphic T-shirt',
-      size: 'Medium',
-      color: 'White',
-      otp: '664564',
-      distance: '28km',
-      time: '10Min',
-      price: 145,
-    },
-    {
-      id: 4,
-      title: 'Gradient Graphic T-shirt',
-      size: 'Medium',
-      color: 'White',
-      otp: '664564',
-      distance: '28km',
-      time: '10Min',
-      price: 145,
-    },
-  ];
-
-  const returnRequests = [
-    {
-      id: 1,
-      title: 'Gradient Graphic T-shirt',
-      color: 'White',
-      orderId: '12123',
-      price: 145,
-      image:
-        'https://img.freepik.com/free-photo/white-t-shirt-with-colorful-paint-it_1340-23847.jpg',
-    },
-    {
-      id: 2,
-      title: 'Checkered Shirt',
-      size: 'Medium',
-      color: 'Red',
-      price: 145,
-      image: 'https://img.freepik.com/free-photo/checkered-shirt-isolated_1253-334.jpg',
-    },
-    {
-      id: 3,
-      title: 'Gradient Graphic T-shirt',
-      color: 'White',
-      orderId: '12123',
-      price: 145,
-      image:
-        'https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?q=80&w=400&auto=format&fit=crop',
-    },
-    {
-      id: 4,
-      title: 'Checkered Shirt',
-      size: 'Medium',
-      color: 'Red',
-      price: 145,
-      image: 'https://img.freepik.com/free-photo/checkered-shirt-isolated_1253-334.jpg',
-    },
-  ];
-
-  const deliveredOrders = [
-    {
-      id: 1,
-      title: 'Gradient Graphic T-shirt',
-      size: 'Medium',
-      color: 'White',
-      orderId: '146446',
-      price: 145,
-      image:
-        'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
-    },
-    {
-      id: 2,
-      title: 'Checkered Shirt',
-      size: 'Medium',
-      color: 'White',
-      orderId: '146446',
-      price: 180,
-      image: 'https://img.freepik.com/free-photo/checkered-shirt-isolated_1253-334.jpg',
-    },
-    {
-      id: 3,
-      title: 'Gradient Graphic T-shirt',
-      size: 'Medium',
-      color: 'White',
-      orderId: '146446',
-      price: 145,
-      image:
-        'https://images.unsplash.com/photo-1532332248682-206cc786359f?q=80&w=400&auto=format&fit=crop',
-    },
-    {
-      id: 4,
-      title: 'Gradient Graphic T-shirt',
-      size: 'Medium',
-      color: 'White',
-      orderId: '146446',
-      price: 145,
-      image:
-        'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
-    },
-  ];
-
-  const cancelledOrders = [
-    {
-      id: 1,
-      title: 'Gradient Graphic T-shirt',
-      color: 'White',
-      orderId: '12123',
-      price: 145,
-      status: 'Cancelled',
-      statusColor: '#EF4444',
-      image:
-        'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
-    },
-    {
-      id: 2,
-      title: 'Checkered Shirt',
-      size: 'Medium',
-      color: 'Red',
-      orderId: '12123',
-      price: 180,
-      status: 'Refund Processiong',
-      statusColor: '#22C55E',
-      image: 'https://img.freepik.com/free-photo/checkered-shirt-isolated_1253-334.jpg',
-    },
-    {
-      id: 3,
-      title: 'Gradient Graphic T-shirt',
-      color: 'White',
-      orderId: '12123',
-      price: 240,
-      status: 'Cancelled',
-      statusColor: '#EF4444',
-      image:
-        'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
-    },
-    {
-      id: 4,
-      title: 'Checkered Shirt',
-      size: 'Medium',
-      color: 'Red',
-      orderId: '12123',
-      price: 180,
-      status: 'Refund Processiong',
-      statusColor: '#22C55E',
-      image: 'https://img.freepik.com/free-photo/checkered-shirt-isolated_1253-334.jpg',
-    },
-    {
-      id: 5,
-      title: 'Gradient Graphic T-shirt',
-      color: 'White',
-      orderId: '12123',
-      price: 145,
-      status: 'Cancelled',
-      statusColor: '#EF4444',
-      image:
-        'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
-    },
-  ];
+  if (role === 'hotel') {
+    return <HotelBookings />;
+  }
 
   if (role === 'restaurant') {
     return <RestaurantOrders />;
@@ -237,14 +399,9 @@ export default function OrderManagement() {
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
       <View className="flex-1">
-        {/* Header */}
         <View className="items-center py-5">
-          <Text className="text-2xl font-bold text-[#848F4B]" style={{ fontFamily: 'Inter' }}>
-            Order Management
-          </Text>
+          <Text className="text-2xl font-bold text-[#848F4B]">Order Management</Text>
         </View>
-
-        {/* Top Tabs */}
         <View className="flex-row justify-center space-x-3 px-6 pb-6">
           {(['Active', 'Delivered', 'Cancellation'] as const).map((tab) => (
             <TouchableOpacity
@@ -260,25 +417,22 @@ export default function OrderManagement() {
           ))}
         </View>
 
-        {/* Search Bar */}
         <View className="mb-6 px-6">
-          <View className="flex-row items-center rounded-3xl border border-[#F1F5F9] bg-white px-5 drop-shadow-lg">
+          <View className="flex-row items-center rounded-3xl border border-[#F1F5F9] bg-white px-5">
             <Search size={22} color="#CBD5E1" />
             <TextInput
               placeholder="Search Current order"
               placeholderTextColor="#CBD5E1"
               value={searchQuery}
               onChangeText={setSearchQuery}
-              className="ml-3 flex-1 text-base text-[#334155]"
+              className="ml-3 h-14 flex-1 text-base text-[#334155]"
             />
           </View>
         </View>
 
-        {/* Sub Tabs */}
         <View className="flex-row border-b border-[#F1F5F9] px-6 py-0">
           <TouchableOpacity
             onPress={() => setSubTab('Ready to handoff')}
-            activeOpacity={0.7}
             className={`pb-2 ${subTab === 'Ready to handoff' ? 'border-b-2 border-[#FF8C00]' : ''}`}>
             <Text
               className={`text-sm font-bold ${subTab === 'Ready to handoff' ? 'text-[#FF8C00]' : 'text-[#475569]'}`}>
@@ -287,7 +441,6 @@ export default function OrderManagement() {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setSubTab('Returns and Cancells')}
-            activeOpacity={0.7}
             className={`ml-8 pb-2 ${subTab === 'Returns and Cancells' ? 'border-b-2 border-[#FF8C00]' : ''}`}>
             <Text
               className={`text-sm font-bold ${subTab === 'Returns and Cancells' ? 'text-[#FF8C00]' : 'text-[#475569]'}`}>
@@ -300,318 +453,11 @@ export default function OrderManagement() {
           className="flex-1 pt-5"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 120 }}>
-          {activeTab === 'Active' ? (
-            subTab === 'Ready to handoff' ? (
-              <View>
-                <Text className="mb-5 px-6 text-sm font-medium text-[#94A3B8]">
-                  Upcoming Handoff
-                </Text>
-                {activeOrders.map((item) => (
-                  <TouchableOpacity
-                    key={item.id}
-                    activeOpacity={0.9}
-                    onPress={() => router.push('/ecommerce/product-details')}
-                    className="mx-6 mb-6 flex-row items-start border-b border-[#F1F5F9] pb-6">
-                    <Image
-                      source={{
-                        uri: 'https://images.unsplash.com/photo-1543132220-3ce99c5ae93b?q=80&w=400&auto=format&fit=crop',
-                      }}
-                      className="h-28 w-28 rounded-2xl"
-                    />
-                    <View className="ml-5 flex-1">
-                      <View className="flex-row items-center justify-between">
-                        <Text className="text-base font-bold text-[#334155]" style={{ flex: 1 }}>
-                          {item.title}
-                        </Text>
-                        <TouchableOpacity onPress={() => setShowMenu(item.id)} className="p-1">
-                          <MoreVertical size={20} color="#CBD5E1" />
-                        </TouchableOpacity>
-                      </View>
-                      <Text className="mt-0.5 text-sm text-[#94A3B8]">
-                        Size: {item.size}, Color: {item.color}
-                      </Text>
-                      <Text className="text-sm text-[#94A3B8]">OTP: {item.otp}</Text>
-                      <View className="mt-1.5 flex-row items-center">
-                        <MapPin size={16} color="#22C55E" />
-                        <Text className="ml-1.5 text-sm font-bold text-[#22C55E]">
-                          {item.distance}{' '}
-                          <Text className="font-normal text-[#94A3B8]">({item.time})</Text>
-                        </Text>
-                      </View>
-                      <View className="mt-3 flex-row items-center justify-between">
-                        <Text className="text-xl font-bold text-[#334155]">${item.price}</Text>
-                        <TouchableOpacity
-                          onPress={() => setShowHandoffModal(true)}
-                          className="rounded-full bg-[#FF8C00] px-6 py-2">
-                          <Text className="text-sm font-bold text-white">Handoff</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            ) : (
-              <View>
-                <Text className="mb-5 px-6 text-sm font-medium text-[#94A3B8]">
-                  Active return requests
-                </Text>
-                {returnRequests.map((item) => (
-                  <TouchableOpacity
-                    key={item.id}
-                    activeOpacity={0.9}
-                    onPress={() => router.push('/ecommerce/product-details')}
-                    className="mx-6 mb-6 flex-row items-center space-x-5 border-b border-[#F1F5F9] pb-6">
-                    <View className="h-32 w-32 rounded-3xl bg-[#F8FAFC] p-3">
-                      <Image
-                        source={{ uri: item.image }}
-                        className="h-full w-full rounded-2xl"
-                        resizeMode="contain"
-                      />
-                    </View>
-                    <View className="flex-1">
-                      <Text className="text-base font-bold text-[#334155]">{item.title}</Text>
-                      {item.size && (
-                        <Text className="mt-0.5 text-sm text-[#94A3B8]">Size: {item.size}</Text>
-                      )}
-                      <Text className="text-sm text-[#94A3B8]">Color: {item.color}</Text>
-                      {item.orderId && (
-                        <Text className="text-sm text-[#94A3B8]">Order#{item.orderId}</Text>
-                      )}
-                      <View className="mt-3 flex-row items-center justify-between">
-                        <Text className="text-sm font-bold text-[#334155]">${item.price}</Text>
-                        <TouchableOpacity
-                          activeOpacity={0.8}
-                          onPress={() => setShowReturningModal(true)}
-                          className="rounded-full bg-[#FF8C00] px-5 py-2">
-                          <Text className="text-sm font-bold text-white">Review request</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )
-          ) : activeTab === 'Delivered' ? (
-            <View>
-              <Text className="mb-5 px-6 text-sm font-medium text-[#475569]">Customers List</Text>
-              {deliveredOrders.map((item) => (
-                <TouchableOpacity
-                  key={item.id}
-                  activeOpacity={0.9}
-                  onPress={() =>
-                    router.push({
-                      pathname: '/ecommerce/product-details',
-                      params: { type: 'delivered' },
-                    })
-                  }
-                  className="mx-6 mb-6 flex-row items-center border-b border-[#F1F5F9] pb-6">
-                  <Image source={{ uri: item.image }} className="h-28 w-28 rounded-2xl" />
-                  <View className="ml-5 flex-1">
-                    <Text className="text-base font-bold text-[#334155]">{item.title}</Text>
-                    <Text className="mt-0.5 text-sm text-[#94A3B8]">
-                      Size: {item.size}, Color: {item.color}
-                    </Text>
-                    <Text className="text-sm text-[#94A3B8]">Order#{item.orderId}</Text>
-                    <View className="mt-3 flex-row items-center justify-between">
-                      <Text className="text-xl font-bold text-[#334155]">${item.price}</Text>
-                      <TouchableOpacity
-                        className="rounded-full bg-[#FF8C00] px-5 py-2"
-                        onPress={() =>
-                          router.push({
-                            pathname: '/ecommerce/product-details',
-                            params: { type: 'delivered' },
-                          })
-                        }>
-                        <Text className="text-sm font-bold text-white">View Order</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-          ) : (
-            <View>
-              {cancelledOrders.map((item) => (
-                <TouchableOpacity
-                  key={item.id}
-                  activeOpacity={0.9}
-                  onPress={() => router.push('/ecommerce/product-details')}
-                  className="mx-6 mb-6 flex-row items-center border-b border-[#F1F5F9] pb-6">
-                  <Image source={{ uri: item.image }} className="h-28 w-28 rounded-2xl" />
-                  <View className="ml-5 flex-1">
-                    <Text className="text-base font-bold text-[#334155]">{item.title}</Text>
-                    {item.size && (
-                      <Text className="mt-0.5 text-sm text-[#94A3B8]">Size: {item.size}</Text>
-                    )}
-                    <Text className="text-sm text-[#94A3B8]">Color: {item.color}</Text>
-                    <Text className="text-sm text-[#94A3B8]">Order#{item.orderId}</Text>
-                    <View className="mt-3 flex-row items-center justify-between">
-                      <Text className="text-xl font-bold text-[#334155]">${item.price}</Text>
-                      <Text className="text-sm font-bold" style={{ color: item.statusColor }}>
-                        {item.status}
-                      </Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
+          <View className="px-6">
+            <Text className="text-base text-[#94A3B8]">Select a role to see orders.</Text>
+          </View>
         </ScrollView>
       </View>
-
-      {/* Popover Menu Overlay */}
-      {showMenu !== null && (
-        <Pressable
-          onPress={() => setShowMenu(null)}
-          className="absolute bottom-0 left-0 right-0 top-0 z-20">
-          <View
-            className="absolute rounded-2xl border border-[#F1F5F9] bg-white p-2 shadow-2xl"
-            style={{
-              top: 380 + (showMenu - 1) * 150, // Calculated position based on item index (rough)
-              right: 25,
-              width: 200,
-              elevation: 15,
-              zIndex: 30,
-            }}>
-            {/* Popover Arrow */}
-            <View
-              style={{
-                position: 'absolute',
-                top: -12,
-                right: 20,
-                width: 0,
-                height: 0,
-                backgroundColor: 'transparent',
-                borderStyle: 'solid',
-                borderLeftWidth: 12,
-                borderRightWidth: 12,
-                borderBottomWidth: 12,
-                borderLeftColor: 'transparent',
-                borderRightColor: 'transparent',
-                borderBottomColor: 'white',
-              }}
-            />
-            <TouchableOpacity
-              onPress={() => setShowMenu(null)}
-              className="flex-row items-center rounded-t-xl border-b border-[#F1F5F9] px-5 py-4 active:bg-gray-50">
-              <TrendingUp size={16} color="#475569" />
-              <Text className="ml-4 text-sm font-medium text-[#475569]">Order Summery</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setShowMenu(null);
-                setShowCancellationModal(true);
-              }}
-              className="flex-row items-center rounded-b-xl px-5 py-4 active:bg-gray-50">
-              <X size={16} color="#475569" />
-              <Text className="ml-4 text-sm font-medium text-[#475569]">Cancel order</Text>
-            </TouchableOpacity>
-          </View>
-        </Pressable>
-      )}
-
-      {/* Handoff Confirmation Modal */}
-      <Modal visible={showHandoffModal} transparent animationType="fade">
-        <View className="flex-1 items-center justify-center bg-black/40 px-8">
-          <View className="relative w-full rounded-3xl bg-white p-7 shadow-2xl">
-            <TouchableOpacity
-              onPress={() => setShowHandoffModal(false)}
-              className="absolute right-5 top-5 p-1">
-              <X size={22} color="#CBD5E1" />
-            </TouchableOpacity>
-            <Text className="mb-10 mt-6 text-center text-lg font-semibold leading-8 text-[#475569]">
-              Are you sure about marking order Handoff?
-            </Text>
-            <View className="flex-row items-center justify-between">
-              <TouchableOpacity
-                onPress={() => setShowHandoffModal(false)}
-                className="mr-4 flex-1 rounded-xl border-2 border-[#FF8C00] py-2">
-                <Text className="text-center text-lg font-bold text-[#FF8C00]">No</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setShowHandoffModal(false)}
-                className="flex-1 rounded-xl border-2 border-[#FF8C00] bg-[#FF8C00] py-2">
-                <Text className="text-center text-lg font-bold text-white">Yes</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Cancellation Modal */}
-      <Modal visible={showCancellationModal} transparent animationType="slide">
-        <View className="flex-1 items-center justify-center bg-black/40 px-6">
-          <View className="w-full rounded-[40px] bg-white p-8 shadow-2xl">
-            <View className="mb-8 flex-row items-center justify-between">
-              <TouchableOpacity onPress={() => setShowCancellationModal(false)} className="p-1">
-                <ArrowLeft size={20} color="#94A3B8" />
-              </TouchableOpacity>
-              <Text className="text-xl font-bold text-[#475569]">Cancellation</Text>
-              <TouchableOpacity onPress={() => setShowCancellationModal(false)} className="p-1">
-                <X size={20} color="#CBD5E1" />
-              </TouchableOpacity>
-            </View>
-
-            <View className="mb-10">
-              <Text className="mb-3 text-lg font-bold text-[#475569]">Reason</Text>
-              <View className="shadow-inner h-44 rounded-3xl border border-[#F1F5F9] bg-white p-5">
-                <TextInput
-                  placeholder="Enter here"
-                  placeholderTextColor="#CBD5E1"
-                  multiline
-                  className="flex-1 text-base text-[#334155]"
-                  textAlignVertical="top"
-                />
-              </View>
-              <Text className="mt-3 text-sm font-medium text-[#94A3B8]">
-                Tell reason in details.
-              </Text>
-            </View>
-
-            <TouchableOpacity
-              onPress={() => setShowCancellationModal(false)}
-              className="w-full rounded-xl bg-[#FF8C00] py-3 shadow-xl shadow-orange-200 active:opacity-90">
-              <Text className="text-center text-xl font-bold text-white">Submit</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Returning Request Modal */}
-      <Modal visible={showReturningModal} transparent animationType="slide">
-        <View className="flex-1 items-center justify-center bg-black/40 px-6">
-          <View className="w-full rounded-3xl bg-white p-8 shadow-2xl">
-            <View className="mb-8 flex-row items-center justify-between">
-              <TouchableOpacity onPress={() => setShowReturningModal(false)} className="p-1">
-                <ArrowLeft size={20} color="#94A3B8" />
-              </TouchableOpacity>
-              <Text className="text-lg font-bold text-[#1F2937]">Returning request</Text>
-              <TouchableOpacity onPress={() => setShowReturningModal(false)} className="p-1">
-                <X size={20} color="#CBD5E1" />
-              </TouchableOpacity>
-            </View>
-
-            <Text className="mb-12 text-sm leading-7 text-[#4B5563]">
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has been
-              the industry's standard dummy text ever since the 1500s, when an unknown printer took
-              a galley
-            </Text>
-
-            <View className="mt-5 flex-row items-center justify-between space-x-8">
-              <TouchableOpacity
-                onPress={() => setShowReturningModal(false)}
-                className="flex-1 rounded-xl border-2 border-[#FF8C00] py-2">
-                <Text className="text-center text-base font-semibold text-[#FF8C00]">Reject</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setShowReturningModal(false)}
-                className="ml-5 flex-1 rounded-xl border-2 border-[#FF8C00] bg-[#FF8C00] py-2 active:opacity-90">
-                <Text className="text-center text-base font-semibold text-white">Accept</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 }
