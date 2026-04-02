@@ -5,9 +5,9 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const BulletPoint = ({ text }: { text: string }) => (
-  <View className="mb-4 flex-row">
-    <Text className="mr-2 text-lg text-[#64748B]">•</Text>
-    <Text className="flex-1 text-[15px] leading-6 text-[#64748B]">{text}</Text>
+  <View className="mb-4 flex-row items-start">
+    <Text className="mr-3 text-lg leading-6 text-[#64748B]">•</Text>
+    <Text className="flex-1 text-[15px] font-medium leading-6 text-[#64748B]">{text}</Text>
   </View>
 );
 
@@ -27,13 +27,12 @@ export default function Agreement() {
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
       {/* Header */}
       <View className="px-6 py-4">
-        <View className="flex-row items-center border-b border-transparent">
+        <View className="flex-row items-center justify-between">
           <TouchableOpacity onPress={() => router.back()} className="-ml-2 p-2">
             <ArrowLeft size={28} color="#1E293B" />
           </TouchableOpacity>
-          <View className="mr-6 flex-1 items-center">
-            <Text className="text-xl font-bold text-[#848F4B]">Privacy & agreement</Text>
-          </View>
+          <Text className="text-xl font-bold text-[#848F4B]">Privacy & agreement</Text>
+          <View className="w-10" />
         </View>
 
         {/* Progress Bar */}
@@ -49,7 +48,7 @@ export default function Agreement() {
         className="flex-1 px-8 pt-10"
         contentContainerStyle={{ paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}>
-        <Text className="mb-10 text-[15px] leading-6 text-[#64748B]">
+        <Text className="mb-10 text-[15px] font-medium leading-6 text-[#64748B]">
           The Food Room Restaurant offers whimsical fusion comfort food, like Cloud Burgers and
           Electric Soup. With a rotating mystery menu, flying nachos, and glowing decor, it's a fun,
           interactive dining experience where food surprises and delights in every bite.

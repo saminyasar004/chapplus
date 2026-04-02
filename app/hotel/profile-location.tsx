@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { ArrowLeft, ArrowRight, MapPin, Search } from 'lucide-react-native';
+import { ArrowLeft, ArrowRight, MapPin } from 'lucide-react-native';
 import React from 'react';
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,13 +11,12 @@ export default function ProfileLocation() {
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
       {/* Header */}
       <View className="px-6 py-4">
-        <View className="flex-row items-center">
+        <View className="flex-row items-center justify-between">
           <TouchableOpacity onPress={() => router.back()} className="-ml-2 p-2">
             <ArrowLeft size={28} color="#1E293B" />
           </TouchableOpacity>
-          <View className="mr-6 flex-1 items-center">
-            <Text className="text-xl font-bold text-[#848F4B]">Create Hotel Profile</Text>
-          </View>
+          <Text className="text-xl font-bold text-[#848F4B]">Create Hotel Profile</Text>
+          <View className="w-10" />
         </View>
 
         {/* Progress Bar */}
@@ -46,14 +45,14 @@ export default function ProfileLocation() {
 
         {/* Search Overlay */}
         <View className="absolute left-6 right-6 top-6">
-          <View className="overflow-hidden rounded-2xl bg-white shadow-2xl">
-            <View className="flex-row items-center border-b border-[#F1F5F9] px-4 py-3">
+          <View className="overflow-hidden rounded-2xl bg-white shadow-2xl shadow-slate-200">
+            <View className="flex-row items-center border-b border-[#F1F5F9] px-4 py-2">
               <TextInput
                 placeholder="Street, road."
                 placeholderTextColor="#94A3B8"
-                className="flex-1 text-base text-[#1E293B]"
+                className="flex-1 py-3 text-base text-[#1E293B]"
               />
-              <TouchableOpacity className="mx-2">
+              <TouchableOpacity className="mx-4">
                 <Text className="text-sm font-bold text-[#FF8C00]">Locate me</Text>
               </TouchableOpacity>
               <TouchableOpacity className="h-10 w-10 items-center justify-center rounded-xl bg-[#FF8C00]">
@@ -65,7 +64,7 @@ export default function ProfileLocation() {
               <TouchableOpacity className="mb-4 border-b border-[#F1F5F9] pb-4">
                 <Text className="text-sm text-[#64748B]">Dalas, TX.</Text>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity className="pb-2">
                 <Text className="text-sm text-[#64748B]">Dalas, TX.</Text>
               </TouchableOpacity>
             </View>

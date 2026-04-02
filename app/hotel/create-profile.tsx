@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { ArrowLeft, ArrowRight, Upload, X } from 'lucide-react-native';
+import { ArrowLeft, ArrowRight, CloudUpload, X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -43,13 +43,12 @@ export default function CreateHotelProfile() {
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
       {/* Header */}
       <View className="px-6 py-4">
-        <View className="flex-row items-center">
+        <View className="flex-row items-center justify-between">
           <TouchableOpacity onPress={() => router.back()} className="-ml-2 p-2">
             <ArrowLeft size={28} color="#1E293B" />
           </TouchableOpacity>
-          <View className="mr-6 flex-1 items-center">
-            <Text className="text-xl font-bold text-[#848F4B]">Create Hotel Profile</Text>
-          </View>
+          <Text className="text-xl font-bold text-[#848F4B]">Create Hotel Profile</Text>
+          <View className="w-10" />
         </View>
 
         {/* Progress Bar */}
@@ -67,28 +66,28 @@ export default function CreateHotelProfile() {
         showsVerticalScrollIndicator={false}>
         {/* Hotel Image Section */}
         <View className="mt-6">
-          <Text className="mb-4 text-lg font-bold text-[#475569]">Hotel Image</Text>
+          <Text className="mb-4 text-lg font-bold text-[#64748B]">Hotel Image</Text>
           <View className="flex-row flex-wrap justify-between">
             {images.map((img, index) => (
               <View
                 key={index}
                 className="relative mb-4 aspect-[4/3] w-[48%] overflow-hidden rounded-2xl">
                 <Image source={{ uri: img }} className="h-full w-full" />
-                <TouchableOpacity className="absolute right-2 top-2 h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-sm">
+                <TouchableOpacity className="absolute right-2 top-2 h-6 w-6 items-center justify-center rounded-full bg-white/80 shadow-sm">
                   <X size={14} color="#64748B" />
                 </TouchableOpacity>
               </View>
             ))}
           </View>
-          <TouchableOpacity className="mt-2 flex-row items-center justify-center rounded-xl border border-dashed border-[#CBD5E1] py-4">
-            <Upload size={20} color="#64748B" className="mr-2" />
+          <TouchableOpacity className="mt-2 flex-row items-center justify-center rounded-xl border border-dashed border-[#CBD5E1] bg-[#F8FAFC] py-4">
+            <CloudUpload size={20} color="#64748B" className="mr-2" />
             <Text className="font-bold text-[#64748B]">Upload More Images</Text>
           </TouchableOpacity>
         </View>
 
         {/* Hotel Info Section */}
         <View className="mt-10">
-          <Text className="mb-6 text-lg font-bold text-[#475569]">Hotel Info</Text>
+          <Text className="mb-6 text-lg font-bold text-[#64748B]">Hotel Info</Text>
           <FormInput label="Hotel Name" placeholder="Enter here" />
           <FormInput label="Hotel Location (Text)" placeholder="Enter here" />
           <FormInput label="Opening Time" placeholder="Enter here" />

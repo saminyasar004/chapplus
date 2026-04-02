@@ -21,7 +21,7 @@ export default function Success() {
             Account has been created Successfully
           </Text>
 
-          <Text className="text-center text-[15px] leading-6 text-[#94A3B8]">
+          <Text className="text-center text-[15px] font-medium leading-6 text-[#94A3B8]">
             Wait for the confirmation from the admin Restaurant offers whimsical fusion comfort
             food, like Cloud Burgers and Electric Soup.
           </Text>
